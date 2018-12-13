@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/diagnosisNew.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
+    <link href="{{ url_for('static',filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <!--滑动条-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-slider.min.js') }}"></script>
+    <!--jquery bootstrap下拉插件-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/Buttons.css') }}">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/radio.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/index.css') }}"/>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/toop/demo.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/toop/dialog.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/toop/dialog-sally.css') }}"/>
+    <script type="text/javascript" src="{{ url_for('static',filename='js/modernizr.custom.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/progress.css') }}"/>
+    <style>
+        .inner {
+            background-color: white !important;
+        }
+
+        .tool_tip .dropdown-menu {
+            background-color: white !important;
+        }
+
+        .tool_tip .text {
+            color: black !important;
+        }
+
+        .bootstrap-select {
+            margin-bottom: 10px;
+        }
+
+        .tool_tip .dropdown-menu .dropdown-header .text {
+            font-weight: 700;
+        }
+
+        .dropdown-menu .divider {
+            height: 2px;
+            margin: 9px 0;
+            overflow: hidden;
+            background-color: #7d7a7a;
+        }
+
+        .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+            width: 46%;
+        }
+
+        /* #somedialog .dropdown-menu, div.modal .modal-content {
+            border-radius: 0;
+            background-color: #fff;
+            color: #979797;
+        } */
+
+        .input_Txt01 {
+            margin-left: 10px;
+            font-weight: 600;
+            margin-top: 15px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<!--圣杯布局-->
+<body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav">
+                <li><img src="{{ url_for('static',filename='image/logo.png') }}" style="width:50px;height:50px;"></li>
+                <li class="dropdown color">
+                    <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
+                        文件 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">上传文件</a></li>
+                        <li><a href="#">导出数据</a></li>
+                        <li><a href="#">新建项目</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
+                <li><a href="#" class="text fontte">帮助</a></li>
+                <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}">返回</a>
+            <a class="navbar-brand text" href="#">标注系统V1.0</a>
+        </ul>
+    </div>
+</nav>
+<div id="container">
+    <div class="right_Tool">
+        <div class="canvas_model">
+            <canvas id="canvas" style="position:absolute;z-index:0;"></canvas>
+            <canvas id="canvas_rect" style="position:absolute;z-index:2;"></canvas>
+            <canvas id="canvas_line" style="position:absolute;z-index:1;"></canvas>
+        </div>
+        <div class="thumb_model" style="position:relative;">
+            <p>&nbsp;</p>
+            <select id="type_select" style="display: block; text-align: center; margin: 0px auto 10px; height: 25px; color: #333; background: #fff; width:100px;">
+                {% for x in mark_types %}
+                <option value='{{ x.id }}'>{{x.name}}</option>
+                {% endfor %}
+            </select>
+            <div style="width:175px; overflow:hidden; margin:0 auto;">
+                <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal" title="查看当前图像集已保存的标注记录" style="height:70px; margin-top:10px; float:left; border-radius: 4px;"></button>
+                <a id="H_signclass"></a>
+            </div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="myModalLabel">历史标注信息</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-striped" style="table-layout:fixed;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center;">图像名称</th>
+                                        <th style="text-align:center;">标注结果</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history_model">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <a href="javascript:;" target="_blank" class="btn btn-primary" id="export_sql">导出数据</a>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal -->
+            </div>
+            <input id="horizontal01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="20"/>
+            <input id="vertical01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="10" data-slider-orientation="vertical"/>
+            <!-- 标记进度条 -->
+            <div id="scrollBar">
+                <!-- 已完成部分 -->
+                <div id="scroll_Track"></div>
+                <!-- 进度条上的点 -->
+                <!-- <div id="scroll_Thumb"></div> -->
+            </div>
+            <p id="scrollBarTxt" style="text-align:center;"></p>
+
+        </div>
+    </div>
+    <div class="left_Tool">
+        <div class="move_Tool">
+            <div class="tool_div first_tool ">
+                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="enlargement"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-search-plus fa-2x"></i>
+                    <span class="toolbar-text">放大</span>
+                </a>
+            </div>
+            <div class="tool_div first_tool">
+                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="shrink"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-search-minus fa-2x"></i>
+                    <span class="toolbar-text">缩小</span>
+                </a>
+            </div>
+        </div>
+        <div class="img_Tool" id="change_img">
+            <div class="tool_div">
+                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="previous"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-hand-o-left fa-2x"></i>
+                    <span class="toolbar-text">上一张</span>
+                </a>
+            </div>
+            <div class="tool_div">
+                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="next"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-hand-o-right fa-2x"></i>
+                    <span class="toolbar-text">下一张</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="right_context">
+        <div id="sign_history">
+            <p style="color:white;">分类信息</p>
+        </div>
+        <div id="radio" class="sf-checked" type="radio">
+{#            <div class="sf-checked-item" value='1' checked="checked">粘膜上</div>#}
+{#            <div class="sf-checked-item" value='2'>粘膜下</div>#}
+            <!-- {% for x in mark_types %}
+            <div class="sf-checked-item" value='{{ x.id }}'>{{x.name}}</div>
+            {% endfor %} -->
+        </div>
+    {% for x in folder.photos.all() %}
+    <div id="decete_info_{{ x.id }}" style="display:none;">
+        <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
+    </div>
+    {% endfor %}
+    <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p>
+    </div>
+
+
+
+</div>
+<script>
+    var img_status;
+    var _marked;
+    var _image_count;
+    var folder_id;
+    $(document).ready(function() {
+              img_status =new Map([{% for x in folder.photos.all() %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
+              _marked = {{ folder.photos.filter_by(marked=True).count() }};
+              _image_count = {{ folder.photos.count() }};
+              folder_id = {{ folder.id }}
+
+        }
+    );
+</script>
+<script>
+    $('#radio').sfcheckbox();
+    //上传界面创建分类数组，动态绑定到弹出框分类
+    var sign_class;
+    var sign_class_get = [
+        {classify: "正常"}, {classify: "病变前Ⅰ期"}, {classify: "病变前Ⅱ期"}, {classify: "病变"}
+    ];
+    //标注模态框Vue
+    var history_model;
+    //图像上传数组
+    var img_files = [];
+    //缩放比例
+    var scale = 1;
+    //居中显示图像
+    var img_PaddingTop = 0;
+    var img_Paddingleft = 0;
+    //当前图像索引
+    var current_index = 0;
+    /*<-->*/
+    //横向滑动
+    var slider_horizontal = document.getElementById("horizontal");
+    //纵向滑动
+    var slider_vertical = document.getElementById("vertical");
+    //页面加载
+    $(document).ready(function () {
+        var classify = $("#classify").val();
+        $("#scroll_Thumb").css("margin-left", ((_marked / _image_count) * 100) + "%");
+        $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
+        $("#scrollBarTxt").html(_marked + "/" + _image_count);
+        //图像数组
+        img_files = [{% for x in folder.photos.all() %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}]
+        //3个工具参数
+        inclientHeight(3);
+        //加载第一张
+        imageLoad(0);
+
+        history_model = new Vue({
+            el: '#history_model',
+            data: {
+                items: [
+                    /*开始为空，
+                    若后台加载当前已标注的信息，则使用vue特有的push方法重新循环push加载的数组
+                    example1.items.push(array[index])*/
+                    // { name: 'Foo',id:"0" },
+                    // { name: 'Bar',id:"1" }
+                ]
+            }
+        });
+
+        sign_class = new Vue({
+            el: '#classify',
+            data: {
+                items: []
+            }
+        });
+        //根据分类动态创建下拉列表
+        for (var i = 0; i < sign_class_get.length; i++) {
+            sign_class.items.push(sign_class_get[i]);
+        }
+        $("#vertical01").slider({
+            value: 0,
+            formatter: function (value) {
+                return '垂直偏移量： ' + value;
+            }
+        }).on('slide', function (slideEvt) {
+            //当滚动时触发
+            //console.info(slideEvt);
+            //获取当前滚动的值，可能有重复
+            // console.info(slideEvt.value);
+        }).on('change', function (e) {
+            //当值发生改变的时候触发
+            //console.info(e);
+            //获取旧值和新值
+            vertical(e.value.newValue);
+        });
+        $("#horizontal01").slider({
+            value: 0,
+            formatter: function (value) {
+                return '水平偏移量： ' + (-value);
+            }
+        }).on('slide', function (slideEvt) {
+            //当滚动时触发
+            //console.info(slideEvt);
+            //获取当前滚动的值，可能有重复
+            // console.info(slideEvt.value);
+        }).on('change', function (e) {
+            //当值发生改变的时候触发
+            //console.info(e);
+            //获取旧值和新值
+            horizontal(e.value.newValue);
+        });
+    });
+
+
+</script>
+<script src="{{ url_for('static',filename='js/clientHeight.js') }}"></script>
+<script src="{{ url_for('static',filename='js/drawH.js') }}"></script>
+<script src="{{ url_for('static',filename='js/leftTool.js') }}"></script>
+<script src="{{ url_for('static',filename='js/hospital_index.js') }}"></script>
+<script src="{{ url_for('static',filename='js/classie.js') }}"></script>
+<script src="{{ url_for('static',filename='js/dialogFx.js') }}"></script>
+<script>
+    (function () {
+        var dlgtrigger = document.querySelector('[data-dialog]'),
+            somedialog = document.getElementById(dlgtrigger.getAttribute('data-dialog')),
+            dlg = new DialogFx(somedialog);
+        dlgtrigger.addEventListener('click', dlg.toggle.bind(dlg));
+
+    })();
+</script>
+<script>
+    var mark_url = "";
+    $(document).ready(function () {
+        var to_get_img = img_files[current_index].split('/');
+        var img_id = to_get_img[to_get_img.length - 1];
+        mark_url = "/mark/" + img_id;
+        $("#type_titps").html($("#type_select option:selected").text());
+        $("#type_select").change(function(){
+            $("#type_titps").html($("#type_select option:selected").text());
+        });
+        $('#export_sql').text("导出数据");
+        //查看标记列表
+        $("#history_dic").click(function(){
+            var row_data;
+            $.ajax({
+                type: 'GET',
+                url: '/folder/mark_count/'+folder_id,
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                async:false,
+                beforeSend: function () {
+                },
+                success: function (data) {
+                    $("#history_model").empty();
+                    for(var i=0; i<data._count; i++){
+                        row_data ='<tr>\
+                            <td>'+data.images[i].name+'</td>\
+                            <td id="history_model_sign">'+data.images[i].type+'</td>\
+                        </tr>';
+                        $('#history_model').append(row_data);
+                    }
+                    $("#export_sql").attr("href",data.txt_url)
+                }
+            });
+        });
+    });
+    $(function () {
+        $('#change_img').click(function () {//ID为test的元素点击时
+            var to_get_img = img_files[current_index].split('/');
+            var img_id = to_get_img[to_get_img.length - 1];
+            mark_url = "/mark/" + img_id;
+        });
+    });
+</script>
+
+</body>
+</html>

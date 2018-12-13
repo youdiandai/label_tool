@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- Vue.js -->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/diagnosisNew.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/font-awesome.min.css')}}">
+  <link href="{{url_for('static',filename='css/bootstrap-slider.min.css')}}" rel="stylesheet">
+  <!--滑动条-->
+  <script type='text/javascript' src="{{url_for('static',filename='js/bootstrap-slider.min.js')}}"></script>
+  <!--jquery bootstrap下拉插件-->
+  <script type='text/javascript' src="{{url_for('static',filename='js/bootstrap-select.min.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap-select.min.css')}}">
+ <style>
+ .inner{
+   /* background-color: white !important; */
+ }
+ .tool_tip .dropdown-menu{
+    background-color: white !important;
+ }
+ .tool_tip .text{
+    color: black !important;
+ }
+ .bootstrap-select{
+   margin-bottom: 10px;
+ }
+ .tool_tip .dropdown-menu .dropdown-header .text{
+    font-weight: 700;
+ }
+ .dropdown-menu .divider {
+    height: 2px;
+    margin: 9px 0;
+    overflow: hidden;
+    background-color: #7d7a7a;
+}
+ </style>
+</head>
+<!--圣杯布局-->
+<body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+          <ul class="nav navbar-nav">
+            <li><img src="{{url_for('static',filename='image/logo.png')}}" style="width:50px;height:50px;"></li>
+              <li class="dropdown color">
+                <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
+                    文件 <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">上传文件</a></li>
+                    <li><a href="#">导出数据</a></li>
+                    <li><a href="#">新建项目</a></li>
+                </ul>
+            </li>
+            <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
+            <li><a href="#" class="text fontte">帮助</a></li>
+            <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
+          </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <a class="navbar-brand text" href="#">标注系统V1.0</a>
+        </ul>
+    </div>
+   </nav>
+   <div id="container">
+      <div class="right_Tool">
+        <div class="canvas_model">
+          <canvas id ="canvas" style="position:absolute;z-index:0;"></canvas>
+          <canvas id ="canvas_rect" style="position:absolute;z-index:2;"></canvas>
+          <canvas id ="canvas_line"  style="position:absolute;z-index:1;" ></canvas>
+        </div>
+        <div class="thumb_model"style="position:relative;">
+
+          <!-- <input type="range" id="vertical" min="-500" max="500" value="0" oninput="vertical()" onchange="vertical()" title="垂直方向移动查看图像">
+          <input type="range" id="horizontal"   min="-1000" max="1000" value="0" oninput="horizontal()" onchange="horizontal()" title="水平方向移动查看图像"> -->
+          <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal" title="查看当前图像集已保存的标注记录" style="border:0px;"></button>
+          <button type="button" id="save_as"title="保存当前图片坐标点信息" style="border:0px;"></button>
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title" id="myModalLabel">历史标注信息</h4>
+                      </div>
+                      <div class="modal-body">
+                        <table class="table table-striped" style="table-layout:fixed;">
+                           <thead>
+                             <tr>
+                               <th style="text-align:center;">图像名称</th>
+                               <th style="text-align:center;">标注结果</th>
+                               <th style="text-align:center;">标注时间</th>
+                             </tr>
+                           </thead>
+                           <tbody id="history_model">
+                             <tr v-for="item in items">
+                               <td>{{item.imgname}}</td>
+                               <td id="history_model_sign">{{item.sign}}</td>
+                               <td>{{item.time}}</td>
+                             </tr>
+                           </tbody>
+                           </table>
+                      </div>
+                       <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                          <button type="button" class="btn btn-primary" id="export_coordinate">导出数据</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <input id="horizontal01"  type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="20"/>
+          <input id="vertical01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="10"  data-slider-orientation="vertical"/>
+        </div>
+      </div>
+      <div class="left_Tool">
+       <!-- <div class="move_Tool">
+         <div class="tool_div first_tool ">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="enlargement" style="text-decoration:none;"  aria-expanded="false">
+              <i class="fa fa-search-plus fa-2x"></i>
+              <span class="toolbar-text">放大</span>
+          </a>
+         </div>
+         <div class="tool_div first_tool">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="shrink" style="text-decoration:none;"  aria-expanded="false">
+              <i class="fa fa-search-minus fa-2x"></i>
+              <span class="toolbar-text">缩小</span>
+          </a>
+         </div>
+         <div class="tool_div">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb"  id="deleteTool" style="text-decoration:none;"  aria-expanded="false">
+            <i class="fa fa-file-excel-o fa-2x"></i>
+              <span class="toolbar-text">删除</span>
+          </a>
+         </div>
+      </div> -->
+      <!-- <div class="sign_Tool">
+        <div class="tool_div">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="RectEdit" style="text-decoration:none;"  aria-expanded="false">
+            <i class="fa fa-square-o fa-2x"></i>
+              <span class="toolbar-text">矩形</span>
+          </a>
+        </div>
+        <div class="tool_div">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="LineEdit" style="text-decoration:none;"  aria-expanded="false">
+            <i class="fa fa-star-half-full fa-2x"></i>
+              <span class="toolbar-text">不规则</span>
+          </a>
+        </div>
+      </div> -->
+      <div class="img_Tool">
+        <div class="tool_div">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="previous" style="text-decoration:none;"  aria-expanded="false">
+            <i class="fa fa-hand-o-left fa-2x"></i>
+              <span class="toolbar-text">上一张</span>
+          </a>
+        </div>
+        <div class="tool_div">
+          <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb"  id="next"style="text-decoration:none;"  aria-expanded="false">
+            <i class="fa fa-hand-o-right fa-2x" ></i>
+              <span class="toolbar-text">下一张</span>
+          </a>
+        </div>
+      </div>
+      </div>
+      <div class="right_context">
+        <div id="sign_history">
+         <p style="color:white;">标注记录</p>
+       </div>
+       <div style="text-align:center;margin-bottom:20px;">
+         <a id="if_Draw"style="color:white;">隐藏</a>
+     </div>
+       <ol id="sign_context">
+         <li v-for="item in items" :id="item.id" class="sign_text" @mouseover="mouseover" @mouseleave="mouseleave">
+           {{ item.name }}-{{item.classify}}
+         </li>
+       </ol>
+      </div>
+      <!--  -->
+      <div class="tool_tip">
+        <p class="input_Txt">填写标注名称(选填)</p>
+        <input type="text" class="form-control" id="sign_name" placeholder="填写名称(仅供查看使用)">
+        <p class="input_Txt" >设置病例属性(*必选三项)：</p>
+        <!-- <select class="selectpicker" id="classify">
+           <option v-for="item in items" :value="item.classify" title="请选择病变情况">
+             {{item.classify}}
+           </option>
+        </select>
+        <select class="selectpicker" id="datacolor" title="选择图像分类">
+
+           <option>白光</option>
+           <option>蓝光</option>
+           <option>共聚焦图像</option>
+        </select>
+        <select class="selectpicker" id="datacolor" title="选择放大倍率">
+
+           <option>10倍</option>
+           <option>20倍</option>
+           <option>60倍</option>
+        </select> -->
+        <select class="selectpicker" multiple id="classify" title="请必选以下三类">
+          <optgroup label="请选择病变情况:" data-max-options="1" style="font-weight=700;">
+            <option v-for="item in items" :value="item.classify">
+              {{item.classify}}
+            </option>
+          </optgroup>
+          <optgroup label="选择图像分类:" data-max-options="1">
+            <option>白光</option>
+            <option>蓝光</option>
+            <option>共聚焦图像</option>
+          </optgroup>
+          <optgroup label="选择放大倍率:" data-max-options="1">
+            <option>10倍</option>
+            <option>20倍</option>
+            <option>60倍</option>
+          </optgroup>
+        </select>
+        <button type="button" id="success" class="btn btn-success">确定</button>
+        <button type="button" id="remove_rect" class="btn btn-default">取消</button>
+      </div>
+      <div class="theme-popover-mask"></div>
+    </div>
+      <script>
+      var dictionary=[];
+      /* 点坐标信息数据*/
+      //所有绘制元素信息的总类
+      var sign_Information=[];
+      //标注记录列表绑定的vue数组，与rect数组同步更新
+      var sign_context;
+      //上传界面创建分类数组，动态绑定到弹出框分类
+      var sign_class;
+      var sign_class_get=[
+        {classify:"正常"},{classify:"病变前Ⅰ期"},{classify:"病变前Ⅱ期"},{classify:"病变"}
+      ];
+      //标注模态框Vue
+      var history_model;
+        /*<-->*/
+
+       /*图像数据------*/
+      //图像上传数组
+      var img_files=[];
+      //缩放比例
+      var scale=1;
+      var imgX=0;
+      var imgY=0;
+      //居中显示图像
+      var img_PaddingTop=0;
+      var img_Paddingleft=0;
+      //当前图像索引
+      var current_index=0;
+      /*<-->*/
+      //标注信息对应的polygon_array的索引，vue用
+      //避免输入矩形框name为数字与此index冲突，indexvue变为字符串加入特定的标记
+      var indexCircesofVue="";
+      var indexRectesofVue="";
+      //切换按钮
+      var isRectEdit=false;
+      var isLineEdit=false;
+      //横向滑动
+      var slider_horizontal=document.getElementById("horizontal");
+      //纵向滑动
+      var slider_vertical=document.getElementById("vertical");
+      //页面加载
+      $(document).ready(function() {
+        var classify=$("#classify").val();
+        // if (classify) {
+        //
+        //   if (classify.length==3) {
+        //     $(".inner").attr("aria-expanded","false");
+        //   }
+        // }
+        $(".open").on("click",function(){
+          console.log(123);
+        });
+        //图像数组
+        img_files=["{{url_for('static',filename='image/056.jpg')}}","{{url_for('static',filename='image/01.jpg')}}","{{url_for('static',filename='image/02.jpg')}}"]
+        isRectEdit=true;
+        //3个工具参数
+        inclientHeight(3);
+        //加载第一张
+        imageLoad(0);
+        mouseRect();
+        Draw_Line();
+        //vue v-for动态绑定点信息
+        sign_context = new Vue({
+          el: '#sign_context',
+          data: {
+            items: [
+              /*开始为空，
+              若后台加载当前已标注的信息，则使用vue特有的push方法重新循环push加载的数组
+              example1.items.push(array[index])*/
+              // { name: 'Foo',id:"0" },
+              // { name: 'Bar',id:"1" }
+            ]
+          },
+          methods:{
+                 /*绑定v-for动态创建元素的hover事件，不绑定的话jquery对vue创建元素的hover失效*/
+                 mouseover(event) {
+
+                  let el = event.target;
+                  let id = el.getAttribute('id');
+                  var indexId=parseInt(id);
+                  if (id.substr(id.length-6,6)=="Rectes") {
+                    //返回hover元素的数组索引
+                    //因为鼠标点击时，会将某一个元素select设置为true,下面要根据select绘制，所以先将所有isselect设置为false
+                    /*当前是矩形数组，当多种工具的时候，全部加入sign_Information数组，并为数组中每一个对象设立isSelect，这样就完全脱离rects数组了，所有操作只针对于sign_Information数组
+                    此版本第一版只有rects交互，多工具全部信息加入sign_Information数组*/
+                    for (var i = 0; i < rects.length; i++) {
+                      rects[i].isSelected=false;
+                    }
+                    // 将hover id对应的rect isSelected设置为true
+                    rects[indexId].isSelected=true;
+                    //刷新画布
+                    refush(rects);
+                  }
+                  else {
+                    refush_circleLine(indexId);
+                  }
+                },
+                mouseleave(event){
+                  for (var i = 0; i < rects.length; i++) {
+                    rects[i].isSelected=false;
+                  }
+                    refush(rects);
+                    refush_circleLineDisable();
+                }
+
+             }
+        });
+        //
+
+        //
+        history_model = new Vue({
+          el: '#history_model',
+          data: {
+            items: [
+              /*开始为空，
+              若后台加载当前已标注的信息，则使用vue特有的push方法重新循环push加载的数组
+              example1.items.push(array[index])*/
+              // { name: 'Foo',id:"0" },
+              // { name: 'Bar',id:"1" }
+            ]
+          }
+        });
+        sign_class = new Vue({
+          el: '#classify',
+          data: {
+            items: [
+            ]
+          }
+        });
+        //根据分类动态创建下拉列表
+        for (var i = 0; i < sign_class_get.length; i++) {
+          sign_class.items.push(sign_class_get[i]);
+        }
+        $("#vertical01").slider({
+          value:0,
+          formatter: function (value) {
+              return '垂直偏移量： ' + value;
+          }
+          }).on('slide', function (slideEvt) {
+          //当滚动时触发
+          //console.info(slideEvt);
+          //获取当前滚动的值，可能有重复
+          // console.info(slideEvt.value);
+          }).on('change', function (e) {
+          //当值发生改变的时候触发
+          //console.info(e);
+          //获取旧值和新值
+          vertical(e.value.newValue);
+          });
+          $("#horizontal01").slider({
+            value:0,
+            formatter: function (value) {
+                return '水平偏移量： ' + (-value);
+            }
+            }).on('slide', function (slideEvt) {
+            //当滚动时触发
+            //console.info(slideEvt);
+            //获取当前滚动的值，可能有重复
+            // console.info(slideEvt.value);
+            }).on('change', function (e) {
+            //当值发生改变的时候触发
+            //console.info(e);
+            //获取旧值和新值
+            horizontal(e.value.newValue);
+            });
+         });
+      //所有点的数组，目前只包括矩形，后续加入多边形等
+      function sign_info(cls,name,start_x,start_y,end_x,end_y){
+        this.type="rect";
+        this.classify=cls;
+        this.name=name;
+        this.start_x=start_x;
+        this.start_y=start_y;
+        this.end_x=end_x;
+        this.end_y=end_y;
+        /*当前鼠标点击元素和标注信息的hover事件全部使用的rects进行判定，后续加入其他工具时，要把所有点信息加入
+          sign_Information,取消rects和points的操作。
+          因为rect对象的参数不同，可分对象创建，类似于thumb.js中监测点的json数组
+          /*photos
+          [{'points（rect）': [{'point_x': '97', 'point_y': '231'}, {'point_x': '125', 'point_y': '261'}], 'photo_name(多边形也设置数组对象)': '/uploads/ff3bdf6e2e9aee1fcefd9b19abac/7658de5874/ac46a57fedaa50b45023.dcm', 'accs': ['51.077%']},{..},{.}]
+          */
+        // this.isSelected==false;
+      };
+      function points_abc(a,b,c){
+       this.a=a;
+       this.b=b;
+       this.c=c;
+      };
+
+      // function array01(array){
+      //  this.array=array;
+      // };
+      $(".fg").on("click",function(){
+      	for (var i = 0; i <img_div.length; i++) {
+      	  img_div[i].circlres.points.x=start_x;
+      		img_div[i+1].circlres.points.y=start_y;
+      		Circle.push(start_x);
+      		Circle.push(start_y);
+      	}
+      })
+      </script>
+      <script src="{{url_for('static',filename='js/clientHeight.js')}}"></script>
+      <script src="{{url_for('static',filename='js/draw.js')}}"></script>
+      <script src="{{url_for('static',filename='js/mouse_rect.js')}}"></script>
+      <script src="{{url_for('static',filename='js/mouse_LineCircle.js')}}"></script>
+      <script src="{{url_for('static',filename='js/leftTool.js')}}"></script>
+</body>
+</html>

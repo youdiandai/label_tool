@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    {% import "_macros.html" as macros %}
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/diagnosisNew.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
+    <link href="{{ url_for('static',filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <!--滑动条-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-slider.min.js') }}"></script>
+    <!--jquery bootstrap下拉插件-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/main.css') }}">
+    <style>
+        .modal-dialog {
+            width: 700px !important;
+            margin: 30px auto;
+        }
+
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #675e5e;
+        }
+
+        #content1 .dropdown-menu {
+            background-color: white !important;
+        }
+
+        .dropdown-menu > li > a:focus, .dropdown-menu > li > a > span {
+            color: #5d5d5d !important;
+
+        }
+
+        .dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+            color: #262626;
+            text-decoration: none;
+            background-color: #b6ddef !important;
+        }
+    </style>
+</head>
+<body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav">
+                <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
+                <li class="dropdown color">
+                    <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
+                        文件 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">上传文件</a></li>
+                        <li><a href="#">导出数据</a></li>
+                        <li><a href="#">新建项目</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
+                <li><a href="#" class="text fontte">帮助</a></li>
+                <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <a class="navbar-brand text" href="#">线图像标记工具</a>
+        </ul>
+    </div>
+</nav>
+<div class="container-fluid body_container">
+    <h3 class="title">全部项目</h3>
+    <div class="row" style="padding-top:30px;">
+        {% for pro in projects %}
+            <div class="col-md-2">
+                <div class="project" id="floder{{ pro.id }}">
+                    <h4 class="white">项目名称：{{ pro.name }}</h4>
+                    <p class="white">项目类型: {{ pro.project_type.name }}</p>
+                    <p class="white">创建时间：{{ _str(pro.create_time)[:7] }}</p>
+                    <a class="remove" href="javascript:;" onClick="event.cancelBubble = true"><span
+                            class="glyphicon glyphicon-remove"></span></a>
+                    <span class="hidden_span">{{ url_for("main.delete_project",project_id=pro.id) }}</span>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="col-md-2">
+            <div class="project" style="text-align:center;" data-toggle="modal" data-target="#myModal">
+                <a class="add"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                <p class="white">新建标注项目</p>
+            </div>
+        </div>
+    </div>
+<div class="am-fr">
+    <div class="am-pagination tpl-pagination">
+        {{ macros.pagination_widget(pagination,'main.project') }}
+    </div>
+</div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel" style="text-align:center;">
+                    新建文件
+                </h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="modal_option">
+                        <h4 style="color:white;text-align:center;">类型选择</h4>
+                        <ul id="modal_menu">
+                            <li class="lable_class" id="list_01"><span class="glyphicon glyphicon-picture"></span>图像分类
+                            </li>
+                            <li class="lable_class" id="list_02"><span class="glyphicon glyphicon-flag"></span>位置标注</li>
+                            <li class="lable_class" id="list_03"><span class="glyphicon glyphicon-text-width"></span>文字标注
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="rightcontent" id="content1">
+                        <p>项目名称</p>
+                        <input type="text" id="upload_name">
+                        <p style="margin-top:20px;">分类设置(逗号分隔)</p>
+                        <input type="text" id="sign_classify1" placeholder="粘膜上,粘膜下">
+                    </div>
+                    <div class="rightcontent" id="content2" style="display:none;">
+                        <p>项目名称</p>
+                        <input type="text" id="signname">
+                        <p style="margin-top:20px;">分类设置(逗号分隔)</p>
+                        <input type="text" id="sign_classify2" placeholder="花,鸟,鱼,虫">
+                    </div>
+                    <div class="rightcontent" id="content3" style="display:none;">
+                        <p>项目名称</p>
+                        <input type="text" id="text_name">
+                        <p style="margin-top:20px;">文本类型</p>
+                        <input type="text" id="text_classify">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" id="creat_project">
+                    创建项目
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<div class="del_warp">
+    <div class="del_pop">
+        <em class="close_pop close_btn">×</em>
+        <p class="pop_text">是否确认删除？</p>
+        <a href="" class="buttom_btn">确定</a>
+        <button class="buttom_btn close_btn">取消</button>
+    </div>
+</div>
+<script src="{{ url_for('static',filename='js/projectData.js') }}"></script>
+<script>
+    var ajax_url = "";
+    $(document).ready(function () {
+        ajax_url = "{{url_for('main.create_project')}}";
+    });
+</script>
+<script>
+    // 高度与点击切换
+    var clientheight = document.documentElement.clientHeight;
+    {% for pro in projects %}
+        $(".body_container").get(0).style.height = clientheight - 52 + "px";
+        $("#floder{{ pro.id }}").on("click", function () {
+            window.location.href ="{{ url_for('.folders',project_id=pro.id) }}";
+        });
+    {% endfor %}
+    $(".remove").click(function(){
+        var del_href = $(this).siblings("span.hidden_span").text();
+        $(".del_warp").css("display","block");
+        $("a.buttom_btn").attr("href",del_href);
+    });
+    $(".close_btn").click(function(){
+        $(".del_warp").css("display","none");
+    });
+</script>
+</body>
+</html>

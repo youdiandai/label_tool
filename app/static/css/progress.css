@@ -1,0 +1,197 @@
+#Main {
+
+	width: 70%;
+
+	height: 300px;
+
+	margin: 0 auto;
+
+	margin-top: 10px;
+
+}
+
+#scrollBar {
+ position: absolute;
+ bottom: 160px;
+ left: 30px;
+	width: 200px;
+
+	height: 10px;
+
+	background-color: #ccc;
+
+	margin: 0 auto;
+
+	/*margin-top: 50px;*/
+
+	-webkit-border-radius: 2em;
+
+	-moz-border-radius: 2em;
+
+	border-radius: 2em;
+
+	cursor: pointer;
+
+}
+#scrollBarTxt{
+	position: absolute;
+	bottom: 155px;
+	left: 250px;
+	width: auto;
+	color: white;
+	margin: 0px;
+	font-size: 15px;
+}
+#scroll_Track {
+
+	width: 0px;
+
+	height: 10px;
+
+	background-color: #0A8BCC;
+
+	-webkit-border-radius: 2em;
+
+	-moz-border-radius: 2em;
+
+	border-radius: 2em;
+
+}
+
+#scroll_Thumb {
+
+	height: 25px;
+
+	width: 25px;
+
+	background-color: #efefef;
+
+	-webkit-border-radius: 2em;
+
+	-moz-border-radius: 2em;
+
+	border-radius: 2em;
+
+	border: 1px solid #ccc;
+
+	-webkit-box-shadow: 0px 0px 5px #ccc;
+
+	-moz-box-shadow: 0px 0px 5px #ccc;
+
+	box-shadow: 0px 0px 5px #ccc;
+
+	position: absolute;
+
+	margin-top: -18px;
+
+	cursor: pointer;
+
+}
+
+#scroll_Thumb:hover {
+
+	background-color: #ff4400;
+
+	border: 1px solid #fff;
+
+}
+
+#progressBar {
+
+	width: 80%;
+
+	height: 10px;
+
+	background-color: #ccc;
+
+	margin: 0 auto;
+
+	margin-top: 50px;
+
+	-webkit-border-radius: 2em;
+
+	-moz-border-radius: 2em;
+
+	border-radius: 2em;
+
+}
+
+#progressBar_Track {
+
+	width: 200px;
+
+	height: 10px;
+
+	background-color: #ff4400;
+
+	-webkit-border-radius: 2em;
+
+	-moz-border-radius: 2em;
+
+	border-radius: 2em;
+
+}
+
+#beian {
+
+	text-align: center;
+
+	float: left;
+
+	width: 100%;
+
+	margin-top: 50px
+
+}
+
+#beian a {
+
+	color: gray;
+
+	font: 13px "微软雅黑", Arial, Helvetica, sans-serif;
+
+}
+
+
+
+ .progressTime {
+
+            filter: alpha(opacity=50);
+
+            -moz-opacity: 0.5;
+
+            -khtml-opacity: 0.5;
+
+            opacity: 0.5;
+
+            position: absolute;
+
+            _position: fixed;
+
+            left: 25%;
+
+            top:25%;
+
+            Z-INDEX: 2;
+
+            border: 1px solid gray;
+
+            -moz-border-radius: 5px;
+
+            -webkit-border-radius: 5px;
+
+            border-radius: 5px;
+
+            color: white;
+
+            background: #000;
+
+            width: 660px;
+
+            height:200px;
+
+            padding-top: 0px;
+
+            padding-bottom: 0px;
+
+        }

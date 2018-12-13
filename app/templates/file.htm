@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="keywords" content="起宏图,医学影像辅助诊断,人工智能,医学影像识别, 深度学习, 病理检测">
+   <script src="https://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <input type="file" name="file" id="fileFolder" webkitdirectory>
+  <button id="upload-btn" type="button">upload</button>
+  <script>
+  var files = [];
+$(document).ready(function(){
+  $("input").change(function(){
+    files = this.files;
+  });
+});
+$("#upload-btn").click(function(){
+  var fd = new FormData();
+  for (var i = 0; i < files.length; i++) {
+    fd.append("file", files[i]);
+  }
+  $.ajax({
+    url: "/upload",
+    method: "POST",
+    data: fd,
+    contentType: false,
+    processData: false,
+    cache: false,
+    success: function(data){
+      console.log(data.status);
+    }
+  });
+});
+  </script>
+</body>
+</html>

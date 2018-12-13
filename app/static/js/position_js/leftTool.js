@@ -1,0 +1,236 @@
+var clear=false;
+// 矩形与多边形切换
+$("#RectEdit").on("click",function(){
+isRectEdit=true;
+isLineEdit=false;
+document.getElementById("canvas").style.zIndex="2";
+document.getElementById("canvas_rect").style.zIndex="4";
+document.getElementById("canvas_line").style.zIndex="3";
+document.getElementById("canvas_bezier").style.zIndex="1";
+document.getElementById("glasscan").style.zIndex="0";
+// points=[];
+// circles=[];
+// rects=[];
+refush_circleLineDisable();
+});
+$("#LineEdit").on("click",function(){
+  isRectEdit=false;
+  isLineEdit=true;
+  document.getElementById("canvas").style.zIndex="2";
+  document.getElementById("canvas_rect").style.zIndex="3";
+  document.getElementById("canvas_line").style.zIndex="4";
+  document.getElementById("canvas_bezier").style.zIndex="1";
+  document.getElementById("glasscan").style.zIndex="0";
+  // points=[];
+  // circles=[];
+  // rects=[];
+  refush_circleLineDisable();
+});
+
+$("#save_as").on("click",function(){
+  var imgname=img_files[current_index];
+  var today = new Date();
+  var month=today.getMonth()+1;
+  var times = today.getFullYear() + "-"+month+"-"+today.getDate()+" "+today.getHours()+":"+today.getMinutes();
+  //转换
+  var rect01=objDeepCopy(rects);
+  var polygon01=objDeepCopy(polygon_array);
+  // var polygon01=polygon_array.concat()
+  var circle01=objDeepCopy(circle_array);
+  // // rect01=rects.slice(0);
+  // rect01.push([].concat(rects));
+  // // polygon01.concat(polygon_array);
+  // // circle01.concat(circle_array);
+  console.log(scale);
+  // for (var i = 0; i < rect01.length; i++) {
+  //   var offsetX=rect01[i].x-img_Paddingleft;
+  //   var offsetY=rect01[i].y-img_PaddingTop;
+  //
+  //   var newOffsetx=offsetX/scale;
+  //   var newOffsety=offsetY/scale;
+  //   rect01[i].x=newOffsetx;
+  //   rect01[i].y=newOffsety;
+  //   rect01[i].width=(rect01[i].width)/scale;
+  //   rect01[i].height=(rect01[i].height)/scale;
+  // }
+
+   array_transform(rect01,polygon01,circle01,scale,img_Paddingleft,img_PaddingTop);
+
+  sign_Information.push(rect01.slice(0))
+  sign_Information.push([].concat(polygon01));
+  sign_Information.push([].concat(circle01));
+  history_model.items.push({ imgname:imgname,sign:sign_Information,time:times});
+  sign_Information.push(imgname);
+  sign_Information.push(times);
+
+  dictionary.push([].concat(sign_Information));
+//   var photo_id = img_files.substr(img_files.length-1,1);
+// alert(img_files.substr(img_files.length-1,1))
+  var arr2=img_files[current_index].split("/");
+  var photo_id = arr2[2]
+  var labels = '';
+//   var save_data = {};
+  for(var i=0; i<$("#sign_context li").length;i++){
+      if(i>0){
+        labels = labels+",";
+      }
+      var str = $("#sign_context li").eq(i).text();
+      var arr=str.split("--");
+      var li_id = '';
+      for(var j=0; j<$("#classify option").length;j++){
+          if($("#classify option").eq(j).text() == arr[1].replace(/(^\s*)|(\s*$)/g, '')){
+              li_id = $("#classify option").eq(j).val();
+          }
+      }
+      var _points = {};
+    //   labels = labels + "{'name':'"+arr[0].replace(/(^\s*)|(\s*$)/g, '')+"','points':[{'x':'"+rects[i].x+"','y':'"+rects[i].y+"','height':'"+rects[i].height+"','width':'"+rects[i].width+"'}],'label_type':'"+li_id+"'}"
+      labels = labels + '{"name":"'+arr[0].replace(/(^\s*)|(\s*$)/g, '')+'","x":"'+rects[i].x+'","y":"'+rects[i].y+'","height":"'+rects[i].height+'","width":"'+rects[i].width+'","label_type":"'+li_id+'"}';
+    // save_data.name = arr[0].replace(/(^\s*)|(\s*$)/g, '');
+    // save_data.label_type = li_id;
+    // _points.x = rects[i].x;
+    // _points.y = rects[i].y;
+    // _points.height = rects[i].height;
+    // _points.width = rects[i].width;
+    // save_data.points = _points;
+}
+    labels = "["+labels+"]";
+  console.log(labels);
+  $.ajax({
+    type:"POST",//提交请求的方式
+    async:true,
+    url:"/label/"+photo_id,//访问servlet的路径
+    dataType:"json",//没有这个，将把后台放会的json解析成字符串
+    // contentType: 'application/json; charset=utf-8',
+    data:{labels},
+    success:function (data) {
+        //下一张
+        if (current_index<img_files.length-1){
+            current_index+=1;
+            imageLoad(current_index);
+            sign_context.items.splice(0, sign_context.items.length);
+            points=[];
+            circles=[];
+            rects=[];
+        }
+       //更新进度条
+    //    $.ajax({
+    //         url: '/record/label_count/' + record_id,
+    //         type: 'get',
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             _track = document.getElementById("scroll_Track");
+    //             _barText = document.getElementById('scrollBarTxt');
+    //             _track.style.width = ((data.marked / data._count) * 100) + '%';
+    //             _barText.textContent = data.marked + '/' + data._count;
+    //             $("#scrollBarTxt").html(data.marked + "/" + data._count);
+    //             // console.log(current_index);
+    //             // console.log(JSON.stringify(data));
+    //             // console.log(data.images[current_index]);
+    //             if(data.images[current_index].marked){
+    //                 $(".tagg_results").html("分类信息:"+data.images[current_index].type);
+    //             }
+    //         },
+    //         error: function (xhr) {
+    //             //console.error('出错了');
+    //         }
+    //     });
+    },
+    error:function () {
+        alert("保存失败！")
+    }
+  })
+//   $.ajax({
+//     url: url,
+//     type: 'POST',
+//     data: JSON.stringify(_this.data),
+//     dataType: 'json',
+//     contentType: 'application/json; charset=utf-8',
+//     success: function (data) {
+//         _this.refreshTbody(data.items);
+//         console.log(data.widget)
+//         var widget = new Widget(data.widget, _this.widget_id, _this);
+//         widget.refreshWidget();
+//     },
+//     error: function (xhr) {
+//         console.error('error');
+//     }
+// });
+//   console.log("rects:");
+//   //坐标信息
+//   console.log(rects);
+//   console.log("polygon:");
+//   console.log(polygon_array);
+//   console.log("circle01:");
+//   console.log(circle_array);
+//   console.log(sign_Information);
+//   console.log(dictionary);
+  // sign_Information=[];
+  // rects=[];
+  // circle_array=[];
+  // polygon_array=[]
+  // points=[];
+  // circles=[];
+});
+//数组转换
+function array_transform(rects,polygon_array,circle_array,scale,img_Paddingleft,img_PaddingTop){
+  for (var i = 0; i < rects.length; i++) {
+    var offsetX=rects[i].x-img_Paddingleft;
+    var offsetY=rects[i].y-img_PaddingTop;
+    var newOffsetx=offsetX/scale;
+    var newOffsety=offsetY/scale;
+    rects[i].x=newOffsetx;
+    rects[i].y=newOffsety;
+    rects[i].width=(rects[i].width)/scale;
+    rects[i].height=(rects[i].height)/scale;
+  }
+  /*多边形操作 circle_array[[circles],[circles],[circles]]*/
+  for (var i = 0; i < circle_array.length; i++) {
+    for (var j = 0; j < circle_array[i].length; j++)
+    {
+      var offsetX=circle_array[i][j].x-img_Paddingleft;
+      var offsetY=circle_array[i][j].y-img_PaddingTop;
+      var newOffsetx=offsetX/scale;
+      var newOffsety=offsetY/scale;
+      circle_array[i][j].x=newOffsetx;
+      circle_array[i][j].y=newOffsety;
+    }
+  }
+  /*画线*/
+  for (var i = 0; i < polygon_array.length; i++) {
+    for (var j = 0; j < polygon_array[i].length; j++) {
+      var offsetX01=polygon_array[i][j].x-img_Paddingleft;
+      var offsetY01=polygon_array[i][j].y-img_PaddingTop;
+      var newOffsetx=offsetX01/scale;
+      var newOffsety=offsetY01/scale;
+      polygon_array[i][j].x=newOffsetx;
+      polygon_array[i][j].y=newOffsety;
+    }
+  }
+  /*    */
+};
+//对象数组深拷贝的方法，与一般数组深拷贝不一样，普通数组的深拷贝并不能应用
+var objDeepCopy = function (source) {
+    var sourceCopy = source instanceof Array ? [] : {};
+    for (var item in source) {
+        sourceCopy[item] = typeof source[item] === 'object' ? objDeepCopy(source[item]) : source[item];
+    }
+    return sourceCopy;
+};
+$("#if_Draw").on("click",function(){
+  if (clear==false) {
+    this.innerHTML="显示";
+    clear=true;
+    var canvas_rect = document.getElementById("canvas_rect");
+    var context_rect = canvas_rect.getContext("2d");
+    context_rect.clearRect(0 , 0 , canvas.width , canvas.height);
+    var canvas_line = document.getElementById("canvas_line");
+    var context_line = canvas_line.getContext("2d");
+    context_line.clearRect(0 , 0 , canvas.width , canvas.height);
+  }
+  else if (clear) {
+    this.innerHTML="隐藏";
+    clear=false;
+    refush(rects);
+    refush_circleLineDisable();
+  }
+});

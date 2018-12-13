@@ -1,0 +1,25 @@
+1.sign_Information是这张图片的所有点的信息，包括矩形和多边形...
+2.矩形的对象sign_info（type=rect）,多边形的对象线设置为points（type="多边形"）
+3.每一次结束路径就push。
+  每一次切换图片都把这张图片所有点信息加入dictionary--》当前图像集合的所有点
+  得到如下的字典：
+  [[{sign_info},{points},...],[{sign_info},{sign_info}，{points}],[...]......];
+  那么dictionary[0]就是图片一的所有点；
+      dictionary[0][1]图片一的多边形的点。
+
+4.存储传给后端。当第二次加载这个页面的时候，根据索引为每一张图像画点
+ 第一张：dictionary[0],然后根据type采用不同的方法绘制。
+
+
+sign_info:{type,classify,name,clickX,clickY,x1-clickX,y1-clickY};
+pionts:   {type,point}
+
+矩形的数组比较简单，因为元素是固定的，startx,y。。。
+点的数组比较特殊，因为点不固定为n个
+所以这样设置
+{
+ type:"point_circle",
+ point:array
+}
+array=[(x,y),(x,y),(x,y)]
+每一次多边形编辑完毕就1.sign_Information.push

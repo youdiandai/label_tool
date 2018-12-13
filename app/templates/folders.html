@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    {% import "_macros.html" as macros %}
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Vue.js -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/diagnosisNew.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/font-awesome.min.css') }}">
+    <link href="{{ url_for('static',filename='css/bootstrap-slider.min.css') }}" rel="stylesheet">
+    <!--滑动条-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-slider.min.js') }}"></script>
+    <!--右键菜单-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/menu.js') }}"></script>
+    <!--jquery bootstrap下拉插件-->
+    <script type='text/javascript' src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/menu.css') }}">
+    <style>
+        .modal-dialog {
+            width: 25% !important;
+            margin: 30px auto;
+        }
+
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #675e5e;
+        }
+    </style>
+</head>
+<body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav">
+                <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
+                <li class="dropdown color">
+                    <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
+                        文件 <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">上传文件</a></li>
+                        <li><a href="#">导出数据</a></li>
+                        <li><a href="#">新建项目</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
+                <li><a href="#" class="text fontte">帮助</a></li>
+                <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
+            </ul>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <a class="navbar-brand text" href="#">北医三院共聚焦项目标注工具V1.0</a>
+        </ul>
+    </div>
+</nav>
+<div class="main">
+    <div class="loading">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+<div class="container-fluid body_container">
+    <h3 class="title" style="position:relative;">
+        <span id="returntitle" title="返回上一级">文件夹</span>
+        <div class="return_pre">
+            <a href="{{ url_for('.project') }}" class="">
+                <<返回项目目录
+            </a>
+        </div>
+    </h3>
+    <div class="row" style="padding-top:30px;">
+        {% for x in folders %}
+            <div class="col-md-2">
+                <div class="project" id="floder{{ x.id }}">
+                    <h4 class="white">文件夹名称：{{ x.name }}</h4>
+                    <p class="white">编号：{{ x.id }}</p>
+                    <p class="white">创建时间：{{ x.create_time }}</p>
+                    <a class="remove" href="javascript:;" onClick="event.cancelBubble = true">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                    <span class="hidden_span">{{ url_for("main.delete_folder",folder_id=x.id) }}</span>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="floder_container" style="padding: 15px 10px;">
+            <div class="upload_" style="text-align:center;">
+                <a class="input-file input-fileup" href="javascript:;"><span class="glyphicon glyphicon-plus" style="font-size:100px;"></span>
+                    <input type="file" name="file" id="fileFolder" webkitdirectory>
+                </a>
+                <!-- <a class="add"><span class="glyphicon glyphicon-plus" style="font-size:100px;"></span></a>-->
+                <!-- <p class="white">上传文件</p> -->
+            </div>
+        </div>
+        <div class="am-fr">
+            <div class="am-pagination tpl-pagination">
+                {{ macros.pagination_widget(pagination,'.folders',project_id=id) }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content_menu">
+    <ul class="contextmenu">
+        <li><a href="#">复制</a></li>
+        <li><a href="#">删除</a></li>
+    </ul>
+</div>
+<div class="load-div">
+    <div class="load-main">
+        <img src="{{ url_for('static',filename='image/load.gif') }}" class="load-img">
+        <p>正在上传，请稍等…</p>
+    </div>
+</div>
+<div class="del_warp">
+    <div class="del_pop">
+        <em class="close_pop close_btn">×</em>
+        <p class="pop_text">是否确认删除？</p>
+        <a href="" class="buttom_btn">确定</a>
+        <button class="buttom_btn close_btn">取消</button>
+    </div>
+</div>
+<script>
+    $(function () {
+        $(".input-fileup").on("change", "input[type='file']", function () {
+            var files = this.files;
+            console.log(files);
+            console.log(files[3].name)
+            $(".fileerrorTip1").html("").hide();
+            $(".showFileName1").html(files.length + "张文件");
+
+        })
+    })
+</script>
+<script src="{{ url_for('static',filename='js/floderData.js') }}"></script>
+<script>
+    var upload_url = "";
+    $(document).ready(function () {
+        upload_url = "{{url_for('main.upload',pro_id=id)}}";
+    });
+</script>
+<script>
+    // 高度与点击切换
+    var clientheight = document.documentElement.clientHeight;
+    {% for x in folders %}
+        $(".body_container").get(0).style.height = clientheight - 52 + "px";
+        $("#floder{{ x.id }}").on("click", function () {
+            window.location.href = "{{ url_for('.tool',folder_id=x.id) }}";
+        });
+    {% endfor %}
+    $(".remove").click(function(){
+        var del_href = $(this).siblings("span.hidden_span").text();
+        $(".del_warp").css("display","block");
+        $("a.buttom_btn").attr("href",del_href);
+    });
+    $(".close_btn").click(function(){
+        $(".del_warp").css("display","none");
+    });
+</script>
+</body>
+</html>
