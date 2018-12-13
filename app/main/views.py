@@ -165,7 +165,6 @@ def upload(pro_id):
     photo_name = tmp.split('/')[1]
     folder = Folders(folder_name, pro_id, current_user.id)
     img_num = {'num': 0, 'uploaded': 0}
-    print("共上传图片：{} 张".format(request.files.getlist('file')))
     for x in request.files.getlist('file'):
         img_num['num'] = img_num['num'] + 1
         ext = x.filename.split('.')[1]
@@ -239,7 +238,6 @@ def export_xml(folder_id: int):
         save_xml(x.get_xml('xml', photo_name), os.path.join(export_path, photo_name))
     if os.path.exists(os.path.join(folder.url, 'export_xml.zip')):
         os.remove(os.path.join(folder.url, 'export_xml.zip'))
-    print(export_path)
     zipDir(export_path, os.path.join(folder.url, 'export_xml.zip'))
     return send_from_directory(folder.url, 'export_xml.zip', as_attachment=True)
 
@@ -253,15 +251,17 @@ def label(photo_id: int):
     :return:
     """
     data = request.get_json()
-    print(data)
     data = request.values.to_dict()
-    print(data)
     photo = Photos.query.get_or_404(photo_id)
     labels_data = json.loads(data['labels'])
-    print(labels_data)
     for x in labels_data:
         _label = Labels(x['name'], photo_id, x['x'], x['y'], x['height'], x['width'])
-        _label.label_type_id = int(x['label_type'])
+        try:
+            _label.label_type_id = int(x['label_type'])
+        except ValueError:
+            db.session.delete(_label)
+            db.session.commit()
+            abort(500)
     photo.labeled = True
     db.session.add(photo)
     db.session.commit()
@@ -272,7 +272,6 @@ def label(photo_id: int):
 @login_required
 def export(project_id: int):
     data = request.get_json()
-    print(data)
     project = Projects.query.get_or_404(project_id)
     train = int(data['train'])
     test = int(data['test'])
