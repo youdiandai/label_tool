@@ -36,25 +36,13 @@
 <body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
-        <div class="navbar-header">
+               <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
-                <li class="dropdown color">
-                    <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
-                        文件 <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">上传文件</a></li>
-                        <li><a href="#">导出数据</a></li>
-                        <li><a href="#">新建项目</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
-                <li><a href="#" class="text fontte">帮助</a></li>
-                <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
+            <a class="navbar-brand text" href="{{ url_for('.project') }}"><<返回</a>
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
             <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
@@ -72,11 +60,6 @@
 <div class="container-fluid body_container">
     <h3 class="title" style="position:relative;">
         <span id="returntitle" title="返回上一级">文件夹</span>
-        <div class="return_pre">
-            <a href="{{ url_for('.project') }}" class="">
-                <<返回项目目录
-            </a>
-        </div>
     </h3>
     <div class="row" style="padding-top:30px;">
         {% for x in folders %}

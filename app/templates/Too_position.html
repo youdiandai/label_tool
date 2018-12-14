@@ -32,23 +32,11 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <ul class="nav navbar-nav">
-                <li class="dropdown color">
-                    <a href="#" class="dropdown-toggle text fontte" data-toggle="dropdown">
-                        文件 <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">上传文件</a></li>
-                        <li><a href="#">导出数据</a></li>
-                        <li><a href="#">新建项目</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" class="text fontte buttonfirstb">工具</a></li>
-                <li><a href="#" class="text fontte">帮助</a></li>
-                <!-- <li><a href="#" class="text fontte" id="export_coordinate">导出坐标</a></li> -->
+                <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}">返回</a>
+            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}"><<返回</a>
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
             <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
@@ -133,13 +121,13 @@
                     <span class="toolbar-text">缩小</span>
                 </a>
             </div>
-            <div class="tool_div">
-                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="deleteTool"
-                   style="text-decoration:none;" aria-expanded="false">
-                    <i class="fa fa-file-excel-o fa-2x"></i>
-                    <span class="toolbar-text">删除</span>
-                </a>
-            </div>
+{#            <div class="tool_div">#}
+{#                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="deleteTool"#}
+{#                   style="text-decoration:none;" aria-expanded="false">#}
+{#                    <i class="fa fa-file-excel-o fa-2x"></i>#}
+{#                    <span class="toolbar-text">删除</span>#}
+{#                </a>#}
+{#            </div>#}
         </div>
         <div class="sign_Tool">
             <div class="tool_div">
@@ -195,7 +183,7 @@
         </div>
         <ol id="sign_context">
             <li v-for="item in items" :id="item.id" class="sign_text" @mouseover="mouseover" @mouseleave="mouseleave">
-                {[ item.name ]}--{[item.classify]}
+                {[item.classify]}
             </li>
         </ol>
     </div>
