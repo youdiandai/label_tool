@@ -631,77 +631,7 @@ class Photos(db.Model):
         return '<Photos {}>'.format(self.id)
 
 
-#
-# class Position(db.Model):
-#     """胃的哪个部分"""
-#     __tablename__ = "positions"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(20))
-#
-#     photos = db.relationship('Photos', backref='position', lazy='dynamic')
-#
-#     def __repr__(self):
-#         return '<position {}>'.format(self.name)
-#
-#     def __init__(self, name, **kwargs):
-#         super(Position, self).__init__(**kwargs)
-#         self.name = name
-#         db.session.add(self)
-#         db.session.commit()
-#
-#
-# class DetectType(db.Model):
-#     """检测种类"""
-#     __tablename__ = "detect_types"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(20))
-#
-#     photos = db.relationship('Photos', backref='detect_type', lazy='dynamic')
-#
-#     def __repr__(self):
-#         return '<detect_type {}>'.format(self.name)
-#
-#     def __init__(self, name, **kwargs):
-#         super(DetectType, self).__init__(**kwargs)
-#         self.name = name
-#         db.session.add(self)
-#         db.session.commit()
-#
-#
-# class GastroscopyRecordType(db.Model):
-#     """胃镜病例种类"""
-#     __tablename__ = "gastroscopy_record_types"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(20))
-#
-#     photos = db.relationship('Photos', backref='gastroscopy_record_type', lazy='dynamic')
-#
-#     def __repr__(self):
-#         return '<gastroscopy_record_type {}>'.format(self.name)
-#
-#     def __init__(self, name, **kwargs):
-#         super(GastroscopyRecordType, self).__init__(**kwargs)
-#         self.name = name
-#         db.session.add(self)
-#         db.session.commit()
-#
-#
-# class GastroscopyPhotoType(db.Model):
-#     """胃镜图像类型"""
-#     __tablename__ = "gastroscopy_photo_types"
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(20))
-#
-#     photos = db.relationship('Photos', backref='gastroscopy_photo_type', lazy='dynamic')
-#
-#     def __repr__(self):
-#         return '<gastroscopy_photo_type {}>'.format(self.name)
-#
-#     def __init__(self, name, **kwargs):
-#         super(GastroscopyPhotoType, self).__init__(**kwargs)
-#         self.name = name
-#         db.session.add(self)
-#         db.session.commit()
+
 
 
 class Labels(db.Model):

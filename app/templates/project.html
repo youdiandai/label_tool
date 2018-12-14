@@ -67,7 +67,8 @@
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="#">线图像标记工具</a>
+            <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
+            <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
     </div>
 </nav>
@@ -94,11 +95,11 @@
             </div>
         </div>
     </div>
-<div class="am-fr">
-    <div class="am-pagination tpl-pagination">
-        {{ macros.pagination_widget(pagination,'main.project') }}
+    <div class="am-fr">
+        <div class="am-pagination tpl-pagination">
+            {{ macros.pagination_widget(pagination,'main.project') }}
+        </div>
     </div>
-</div>
 </div>
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -174,16 +175,16 @@
     {% for pro in projects %}
         $(".body_container").get(0).style.height = clientheight - 52 + "px";
         $("#floder{{ pro.id }}").on("click", function () {
-            window.location.href ="{{ url_for('.folders',project_id=pro.id) }}";
+            window.location.href = "{{ url_for('.folders',project_id=pro.id) }}";
         });
     {% endfor %}
-    $(".remove").click(function(){
+    $(".remove").click(function () {
         var del_href = $(this).siblings("span.hidden_span").text();
-        $(".del_warp").css("display","block");
-        $("a.buttom_btn").attr("href",del_href);
+        $(".del_warp").css("display", "block");
+        $("a.buttom_btn").attr("href", del_href);
     });
-    $(".close_btn").click(function(){
-        $(".del_warp").css("display","none");
+    $(".close_btn").click(function () {
+        $(".del_warp").css("display", "none");
     });
 </script>
 </body>
