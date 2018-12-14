@@ -107,6 +107,12 @@
             border-bottom: 4px solid #337ab7;
             margin-bottom: 15px;
         }
+
+        .login_message {
+            font-size: 20px;
+            color: #ffffff;
+            text-align: center;
+        }
     </style>
 </head>
 <body style="background:#3e3e40;">
@@ -122,10 +128,9 @@
     </div>
     <form method="POST" action="{{ url_for("auth.login") }}" autocomplete="on" enctype="multipart/form-data">
         <div class="login-main">
-            <p class="login_title">登&nbsp;&nbsp;录</p>
-            <input type="text" placeholder="用户名" name="username">
-            <input type="password" placeholder="密码" name="password">
-            <input type="submit" value="登  录" class="login_btn">
+            <p class="login_title">登&nbsp;&nbsp;录&nbsp;&nbsp;失&nbsp;&nbsp;败</p>
+            <p class="login_message">{{ message }}</p>
+            <a href="{{ url_for('auth.login') }}"><p class="login_message">重试</p></a>
         </div>
     </form>
     <div class="header-bottom">Copyright © Beijing QHT Technique Co.,Ltd. All rights reserved 北京起宏图科技有限公司</div>
