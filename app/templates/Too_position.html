@@ -49,7 +49,8 @@
         </div>
         <ul class="nav navbar-nav navbar-right">
             <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}">返回</a>
-            <a class="navbar-brand text" href="#">标注系统V1.0</a>
+            <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
+            <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
     </div>
 </nav>
@@ -205,7 +206,7 @@
         <!-- 根据分类数组动态显示下拉列表 -->
         <select id="classify" placeholder="手动输入或下拉选择分类">
             {% for x in label_types %}
-            <option value='{{ x.id }}'>{{x.name}}</option>
+                <option value='{{ x.id }}'>{{ x.name }}</option>
             {% endfor %}
         </select>
         <button type="button" id="success" class="btn btn-success">确定</button>
@@ -263,7 +264,7 @@
         _marked = {{ folder.photos.filter_by(labeled=True).count() }};
         _image_count = {{ folder.photos.count() }};
         folder_id = {{ folder.id }}
-        $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
+            $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
         $("#scrollBarTxt").html(_marked + "/" + _image_count);
         //图像数组
         img_files = [{% for x in folder.photos.all() %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}]
