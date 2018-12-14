@@ -27,6 +27,20 @@ def login():
     return render_template('auth/login.html')
 
 
+@auth.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        username = request.values.get('username')
+        password = request.values.get('password')
+        user = Users.query.filter_by(username=username).first()
+        if user:
+            return render_template('auth/register_fail.html', message='用户已经存在')
+        else:
+            user = Users(username, password)
+            return render_template('auth/register_succ.html')
+    return render_template('auth/register.html')
+
+
 @auth.route('/logout')
 @login_required
 def logout():

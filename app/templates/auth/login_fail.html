@@ -107,11 +107,6 @@
             border-bottom: 4px solid #337ab7;
             margin-bottom: 15px;
         }
-        .login_to_register{
-            font-size: 15px;
-            text-align:center;
-            color: #FFFFFF;
-        }
     </style>
 </head>
 <body style="background:#3e3e40;">
@@ -131,7 +126,6 @@
             <input type="text" placeholder="用户名" name="username">
             <input type="password" placeholder="密码" name="password">
             <input type="submit" value="登  录" class="login_btn">
-            <p class="login_to_register">没有账号？去<a href="{{ url_for('auth.register') }}" style="color:#337ab7">注册</a></p>
         </div>
     </form>
     <div class="header-bottom">Copyright © Beijing QHT Technique Co.,Ltd. All rights reserved 北京起宏图科技有限公司</div>
