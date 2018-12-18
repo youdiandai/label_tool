@@ -3,6 +3,7 @@ function createImageDiv(url, class_name) {
     var div = document.createElement('div');
     div.setAttribute('img_src', url);
     div.setAttribute('img_class', class_name);
+    div.className = 'little_div';
     //div.appendChild(createLittleImage(url, class_name, index));
     return div
 }
@@ -27,7 +28,7 @@ function divCreateImg(div) {
     //在imageDiv标签内部创建img图片，使用div的属性，并设置图片点击后跳转
     var img = document.createElement('img');
     img.src = div.getAttribute('img_src');
-    img.className = div.getAttribute('img_class');
+    img.className = 'little_img';
     img.onclick = function () {
         refreshImgNavi(parseInt(img.parentElement.id.split('_')[2]));
     };
