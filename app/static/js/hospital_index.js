@@ -82,7 +82,7 @@ $("#success").on("click", function () {
                     current_index += 1;
                     imageLoad(current_index);
                     $.ajax({
-                        url: '/record/mark_count/' + record_id,
+                        url: '/folder/mark_count/' + folder_id,
                         type: 'get',
                         dataType: 'json',
                         success: function (data) {
@@ -101,14 +101,14 @@ $("#success").on("click", function () {
                         document.getElementById("H_signclass").style.display = "none";
                         document.getElementById("type_select").style.display = "none";
                     }
-                    else{
-                        document.getElementById("H_signclass").style.display="";
-                        document.getElementById("type_select").style.display="";
+                    else {
+                        document.getElementById("H_signclass").style.display = "";
+                        document.getElementById("type_select").style.display = "";
                     }
                     var to_get_img = img_files[current_index].split('/');
                     var img_id = to_get_img[to_get_img.length - 1];
                     mark_url = "/mark/" + img_id;
-                    img_status.set(img_files[current_index-1].split('/')[2],"True")
+                    img_status.set(img_files[current_index - 1].split('/')[2], "True")
                 }
             }
 
@@ -116,41 +116,42 @@ $("#success").on("click", function () {
     }
 });
 // 保存按钮
-$("#H_signclass").on("click",function(){
+$("#H_signclass").on("click", function () {
     var classify = $("#type_select option:selected").val();
     // console.log(classify);
     if (classify == '') {
         alert("请选择分类信息");
         return;
-    }else{
+    } else {
         $.ajax({
             type: 'POST',
             url: mark_url,
             data: classify,
             contentType: 'application/json; charset=UTF-8',
             dataType: 'json',
-            async:false,
+            async: false,
             beforeSend: function () {
             },
             success: function (data) {
                 //下一张
                 if (current_index < img_files.length - 1) {
+                    imgNaviNext();
                     current_index += 1;
                     imageLoad(current_index);
-                    if(img_status.get(img_files[current_index].split('/')[2])=="True"){
-                        document.getElementById("H_signclass").style.display="none";
-                        document.getElementById("type_select").style.display="none";
-                        document.getElementById("red_tips").style.display="none";
+                    if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
+                        document.getElementById("H_signclass").style.display = "none";
+                        document.getElementById("type_select").style.display = "none";
+                        document.getElementById("red_tips").style.display = "none";
                     }
-                    else{
-                        document.getElementById("H_signclass").style.display="";
-                        document.getElementById("type_select").style.display="block";
-                        document.getElementById("red_tips").style.display="block";
+                    else {
+                        document.getElementById("H_signclass").style.display = "";
+                        document.getElementById("type_select").style.display = "block";
+                        document.getElementById("red_tips").style.display = "block";
                     }
                     var to_get_img = img_files[current_index].split('/');
                     var img_id = to_get_img[to_get_img.length - 1];
                     mark_url = "/mark/" + img_id;
-                    img_status.set(img_files[current_index-1].split('/')[2],"True")
+                    img_status.set(img_files[current_index - 1].split('/')[2], "True")
                 }
                 //更新进度条
                 $.ajax({

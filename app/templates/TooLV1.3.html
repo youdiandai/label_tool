@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="{{ url_for('static',filename='js/image_navigation.js') }}"></script>
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
@@ -70,19 +71,27 @@
             margin-top: 15px;
             font-size: 20px;
         }
+
+        .little_img {
+            width: 20%;
+            height: 90%;
+            float: left;
+        }
     </style>
 </head>
 <!--圣杯布局-->
 <body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
-                <div class="navbar-header">
+        <div class="navbar-header">
             <ul class="nav navbar-nav">
                 <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}">返回</a>
+            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}"><
+                <返回
+            </a>
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
             <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
@@ -96,17 +105,32 @@
             <canvas id="canvas_line" style="position:absolute;z-index:1;"></canvas>
         </div>
         <div class="thumb_model" style="position:relative;">
-            <p>&nbsp;</p>
-            <select id="type_select" style="display: block; text-align: center; margin: 0px auto 10px; height: 25px; color: #333; background: #fff; width:100px;">
-                {% for x in mark_types %}
-                <option value='{{ x.id }}'>{{x.name}}</option>
-                {% endfor %}
-            </select>
-            <div style="width:175px; overflow:hidden; margin:0 auto;">
-                <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal" title="查看当前图像集已保存的标注记录" style="height:70px; margin-top:10px; float:left; border-radius: 4px;"></button>
-                <a id="H_signclass"></a>
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewPrev()"
+                                                                  src="{{ url_for('static',filename='image/prev.png') }}">
             </div>
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="bottom_left" style="float:left; width:60%; height:150px;">
+                <div id="little_images">
+                </div>
+            </div>
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewNext()"
+                                                                  src="{{ url_for('static',filename='image/next.png') }}">
+            </div>
+            <div class="bottom_right" style="float:right; width:30%; min-width:200px;">
+                <select id="type_select"
+                        style="display: block; text-align: center; margin: 0px auto 10px; height: 25px; color: #333; background: #fff; width:100px;">
+                    {% for x in mark_types %}
+                        <option value='{{ x.id }}'>{{ x.name }}</option>
+                    {% endfor %}
+                </select>
+                <div style="width:175px; overflow:hidden; margin:0 auto;">
+                    <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal"
+                            title="查看当前图像集已保存的标注记录"
+                            style="height:70px; margin-top:10px; float:left; border-radius: 4px;"></button>
+                    <a id="H_signclass"></a>
+                </div>
+            </div>
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -116,10 +140,10 @@
                         <div class="modal-body">
                             <table class="table table-striped" style="table-layout:fixed;">
                                 <thead>
-                                    <tr>
-                                        <th style="text-align:center;">图像名称</th>
-                                        <th style="text-align:center;">标注结果</th>
-                                    </tr>
+                                <tr>
+                                    <th style="text-align:center;">图像名称</th>
+                                    <th style="text-align:center;">标注结果</th>
+                                </tr>
                                 </thead>
                                 <tbody id="history_model">
                                 </tbody>
@@ -135,7 +159,8 @@
                 <!-- /.modal -->
             </div>
             <input id="horizontal01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="20"/>
-            <input id="vertical01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="10" data-slider-orientation="vertical"/>
+            <input id="vertical01" type="text" data-slider-min="-1000" data-slider-max="1000" data-slider-step="10"
+                   data-slider-orientation="vertical"/>
             <!-- 标记进度条 -->
             <div id="scrollBar">
                 <!-- 已完成部分 -->
@@ -186,20 +211,19 @@
             <p style="color:white;">分类信息</p>
         </div>
         <div id="radio" class="sf-checked" type="radio">
-{#            <div class="sf-checked-item" value='1' checked="checked">粘膜上</div>#}
-{#            <div class="sf-checked-item" value='2'>粘膜下</div>#}
+            {#            <div class="sf-checked-item" value='1' checked="checked">粘膜上</div>#}
+            {#            <div class="sf-checked-item" value='2'>粘膜下</div>#}
             <!-- {% for x in mark_types %}
             <div class="sf-checked-item" value='{{ x.id }}'>{{x.name}}</div>
             {% endfor %} -->
         </div>
-    {% for x in folder.photos.all() %}
-    <div id="decete_info_{{ x.id }}" style="display:none;">
-        <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
+        {% for x in folder.photos.all() %}
+            <div id="decete_info_{{ x.id }}" style="display:none;">
+                <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
+            </div>
+        {% endfor %}
+        <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p>
     </div>
-    {% endfor %}
-    <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p>
-    </div>
-
 
 
 </div>
@@ -208,12 +232,11 @@
     var _marked;
     var _image_count;
     var folder_id;
-    $(document).ready(function() {
-              img_status =new Map([{% for x in folder.photos.all() %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
-              _marked = {{ folder.photos.filter_by(marked=True).count() }};
-              _image_count = {{ folder.photos.count() }};
-              folder_id = {{ folder.id }}
-
+    $(document).ready(function () {
+            img_status = new Map([{% for x in folder.photos.all() %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
+            _marked = {{ folder.photos.filter_by(marked=True).count() }};
+            _image_count = {{ folder.photos.count() }};
+            folder_id ={{ folder.id }};
         }
     );
 </script>
@@ -334,34 +357,35 @@
         var img_id = to_get_img[to_get_img.length - 1];
         mark_url = "/mark/" + img_id;
         $("#type_titps").html($("#type_select option:selected").text());
-        $("#type_select").change(function(){
+        $("#type_select").change(function () {
             $("#type_titps").html($("#type_select option:selected").text());
         });
         $('#export_sql').text("导出数据");
         //查看标记列表
-        $("#history_dic").click(function(){
+        $("#history_dic").click(function () {
             var row_data;
             $.ajax({
                 type: 'GET',
-                url: '/folder/mark_count/'+folder_id,
+                url: '/folder/mark_count/' + folder_id,
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
-                async:false,
+                async: false,
                 beforeSend: function () {
                 },
                 success: function (data) {
                     $("#history_model").empty();
-                    for(var i=0; i<data._count; i++){
-                        row_data ='<tr>\
-                            <td>'+data.images[i].name+'</td>\
-                            <td id="history_model_sign">'+data.images[i].type+'</td>\
+                    for (var i = 0; i < data._count; i++) {
+                        row_data = '<tr>\
+                            <td>' + data.images[i].name + '</td>\
+                            <td id="history_model_sign">' + data.images[i].type + '</td>\
                         </tr>';
                         $('#history_model').append(row_data);
                     }
-                    $("#export_sql").attr("href",data.txt_url)
+                    $("#export_sql").attr("href", data.txt_url)
                 }
             });
         });
+        createImgNavi();
     });
     $(function () {
         $('#change_img').click(function () {//ID为test的元素点击时
@@ -370,6 +394,7 @@
             mark_url = "/mark/" + img_id;
         });
     });
+
 </script>
 
 </body>

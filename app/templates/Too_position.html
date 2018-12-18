@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="{{ url_for('static',filename='js/position_js/image_navigation.js') }}"></script>
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <link rel="stylesheet" href="{{ url_for('static',filename='css/position_css/style.css') }}">
@@ -24,6 +25,12 @@
             -moz-border-radius: 101px;
             position: absolute;
         }
+
+        .little_img {
+            width: 20%;
+            height: 90%;
+            float: left;
+        }
     </style>
 </head>
 <!--圣杯布局-->
@@ -36,7 +43,9 @@
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}"><<返回</a>
+            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}"><
+                <返回
+            </a>
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
             <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>
         </ul>
@@ -53,12 +62,23 @@
 
         </div>
         <div class="thumb_model" style="position:relative;">
-
-            <!-- <input type="range" id="vertical" min="-500" max="500" value="0" oninput="vertical()" onchange="vertical()" title="垂直方向移动查看图像">
-            <input type="range" id="horizontal"   min="-1000" max="1000" value="0" oninput="horizontal()" onchange="horizontal()" title="水平方向移动查看图像"> -->
-            <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal"
-                    title="查看当前图像集已保存的标注记录"></button>
-            <button type="button" id="save_as" title="保存当前图片坐标点信息"></button>
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewPrev()"
+                                                                  src="{{ url_for('static',filename='image/prev.png') }}">
+            </div>
+            <div class="bottom_left" style="float:left; width:60%; height:150px;">
+                <div id="little_images">
+                </div>
+            </div>
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewNext()"
+                                                                  src="{{ url_for('static',filename='image/next.png') }}">
+            </div>
+            <div class="bottom_right" style="float:right; width:30%; min-width:200px;">
+                <!-- <input type="range" id="vertical" min="-500" max="500" value="0" oninput="vertical()" onchange="vertical()" title="垂直方向移动查看图像">
+                <input type="range" id="horizontal"   min="-1000" max="1000" value="0" oninput="horizontal()" onchange="horizontal()" title="水平方向移动查看图像"> -->
+                <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal"
+                        title="查看当前图像集已保存的标注记录"></button>
+                <button type="button" id="save_as" title="保存当前图片坐标点信息"></button>
+            </div>
             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
                  aria-hidden="true">
                 <div class="modal-dialog">
@@ -121,13 +141,13 @@
                     <span class="toolbar-text">缩小</span>
                 </a>
             </div>
-{#            <div class="tool_div">#}
-{#                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="deleteTool"#}
-{#                   style="text-decoration:none;" aria-expanded="false">#}
-{#                    <i class="fa fa-file-excel-o fa-2x"></i>#}
-{#                    <span class="toolbar-text">删除</span>#}
-{#                </a>#}
-{#            </div>#}
+            {#            <div class="tool_div">#}
+            {#                <a type="button" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" id="deleteTool"#}
+            {#                   style="text-decoration:none;" aria-expanded="false">#}
+            {#                    <i class="fa fa-file-excel-o fa-2x"></i>#}
+            {#                    <span class="toolbar-text">删除</span>#}
+            {#                </a>#}
+            {#            </div>#}
         </div>
         <div class="sign_Tool">
             <div class="tool_div">
@@ -366,6 +386,7 @@
             //获取旧值和新值
             horizontal(e.value.newValue);
         });
+        createImgNavi();
     });
 
     //所有点的数组，目前只包括矩形，后续加入多边形等

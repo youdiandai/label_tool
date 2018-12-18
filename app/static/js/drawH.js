@@ -81,12 +81,13 @@ function imageLoad(index) {
     }
 };
 $("#previous").on("click", function () {
+    imgNaviPrev();
     if (current_index > 0) {
         current_index -= 1;
         imageLoad(current_index);
         //更新进度条
         $.ajax({
-            url: '/record/mark_count/' + record_id,
+            url: '/folder/mark_count/' + folder_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -100,8 +101,8 @@ $("#previous").on("click", function () {
                 // console.log(JSON.stringify(data));
                 // console.log(current_index);
                 // console.log(data.images[current_index])
-                if(data.images[current_index].marked){
-                    $(".tagg_results").html("分类信息:"+data.images[current_index].type);
+                if (data.images[current_index].marked) {
+                    $(".tagg_results").html("分类信息:" + data.images[current_index].type);
                 }
             },
             error: function (xhr) {
@@ -114,12 +115,13 @@ $("#previous").on("click", function () {
 
 });
 $("#next").on("click", function () {
+    imgNaviNext();
     if (current_index < img_files.length - 1) {
         current_index += 1;
         imageLoad(current_index);
         //更新进度条
         $.ajax({
-            url: '/record/mark_count/' + record_id,
+            url: '/folder/mark_count/' + folder_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -133,8 +135,8 @@ $("#next").on("click", function () {
                 // console.log(current_index);
                 // console.log(JSON.stringify(data));
                 // console.log(data.images[current_index]);
-                if(data.images[current_index].marked){
-                    $(".tagg_results").html("分类信息:"+data.images[current_index].type);
+                if (data.images[current_index].marked) {
+                    $(".tagg_results").html("分类信息:" + data.images[current_index].type);
                 }
             },
             error: function (xhr) {

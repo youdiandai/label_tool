@@ -24,6 +24,8 @@ def login():
         if user is not None and user.verify_password(password):
             login_user(user, True)
             return redirect(url_for('main.project'))
+        else:
+            return render_template('auth/login_fail.html', message='用户名或密码错误')
     return render_template('auth/login.html')
 
 
