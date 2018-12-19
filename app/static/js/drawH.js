@@ -18,17 +18,13 @@ function imageLoad(index) {
 
     if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
         document.getElementById("H_signclass").style.display = "none";
-        document.getElementById("radio").style.display = "none";
         document.getElementById("type_select").style.display = "none";
         document.getElementById("red_tips").style.display = "none";
-        console.log('不显示')
     }
     else {
         document.getElementById("H_signclass").style.display = "";
         document.getElementById("type_select").style.display = "block";
-        document.getElementById("radio").style.display = "";
         document.getElementById("red_tips").style.display = "block";
-        console.log('显示')
     }
 
     for (let i = 0; i < img_files.length; i++) {

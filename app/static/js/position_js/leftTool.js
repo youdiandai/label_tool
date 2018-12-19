@@ -36,7 +36,6 @@ $("#save_as").on("click", function () {
     var rect01 = objDeepCopy(rects);
     var polygon01 = objDeepCopy(polygon_array);
     var circle01 = objDeepCopy(circle_array);
-    console.log(scale);
 
     array_transform(rect01, polygon01, circle01, scale, img_Paddingleft, img_PaddingTop);
 

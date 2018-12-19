@@ -39,9 +39,6 @@ function divSetCurrent(div) {
     div.children[0].style.border = 'red 4px solid';
 }
 
-function divNotCurrent(div) {
-    div.children[0].style.border = null;
-}
 
 function imgNaviNext() {
     var index = current_index + 1;
@@ -112,14 +109,7 @@ function viewPrev() {
     }
 }
 
-function refreshNext(images) {
-    if (current_index > 1) {
-        if (images[current_index + 3]) {
-            divCreateImg(images[current_index + 3]);
-            divCleanImg(images[current_index - 2]);
-        }
-    }
-}
+
 
 function imgNaviPrev() {
     var index = current_index - 1;
@@ -153,15 +143,7 @@ function imgNaviPrev() {
     }
 }
 
-function refreshPrev(images) {
-    if (current_index < images.length - 2) {
-        if (images[current_index - 3]) {
-            divCreateImg(images[current_index - 3]);
-            divCleanImg(images[current_index + 2]);
-        }
-    }
 
-}
 
 function refreshImgNavi(index) {
     var images = document.getElementById('little_images').children;

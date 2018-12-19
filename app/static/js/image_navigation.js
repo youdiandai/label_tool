@@ -4,7 +4,6 @@ function createImageDiv(url, class_name) {
     div.setAttribute('img_src', url);
     div.setAttribute('img_class', class_name);
     div.className = 'little_div';
-    //div.appendChild(createLittleImage(url, class_name, index));
     return div
 }
 
@@ -30,7 +29,6 @@ function createImgNavi() {
             refreshImgStatus(data.images);
         },
         error: function (xhr) {
-            //console.error('出错了');
         }
     });
 }
@@ -109,16 +107,45 @@ function divSetCurrent(div) {
     div.children[0].style.border = 'red 4px solid';
 }
 
-function divNotCurrent(div) {
-    //设置div不再为当前div
-    div.children[0].style.border = null;
-}
 
 function imgNaviNext() {
     //跳转到下一张图片，注意，没有跳转canvans中的图片，所以canvans中的图片还需要另外进行刷新，并修改current_index的值，目前在点击下一张时调用
     var index = current_index + 1;
     var images = document.getElementById('little_images').children;
     if (index < images.length) {
+        for (var i = 0; i < images.length; i++) {
+            divCleanImg(images[i]);
+        }
+        var display_img = [];
+        if (index < 2) {
+            for (var i = 0; i < 5; i++) {
+                display_img.push(images[i]);
+            }
+        }
+        else if (index > images.length - 3) {
+            for (var i = images.length - 1; i > images.length - 6; i--) {
+                display_img.push(images[i]);
+            }
+        }
+        else {
+            display_img.push(images[index]);
+            display_img.push(images[index - 1]);
+            display_img.push(images[index - 2]);
+            display_img.push(images[index + 1]);
+            display_img.push(images[index + 2]);
+        }
+        for (var i = 0; i < display_img.length; i++) {
+            divCreateImg(display_img[i]);
+        }
+        divSetCurrent(images[index]);
+    }
+}
+
+function imgNaviPrev() {
+    //跳转到上一张图片，同imgNaviNext。
+    var index = current_index - 1;
+    if (index >= 0) {
+        var images = document.getElementById('little_images').children;
         for (var i = 0; i < images.length; i++) {
             divCleanImg(images[i]);
         }
@@ -156,7 +183,6 @@ function viewNext() {
             showing_img.push(images[i])
         }
     }
-    console.log(showing_img);
     var _next = showing_img[showing_img.length - 1].nextElementSibling;
     if (_next) {
         divCreateImg(_next);
@@ -186,57 +212,6 @@ function viewPrev() {
     }
 }
 
-function refreshNext(images) {
-    if (current_index > 1) {
-        if (images[current_index + 3]) {
-            divCreateImg(images[current_index + 3]);
-            divCleanImg(images[current_index - 2]);
-        }
-    }
-}
-
-function imgNaviPrev() {
-    //跳转到上一张图片，同imgNaviNext。
-    var index = current_index - 1;
-    if (index >= 0) {
-        var images = document.getElementById('little_images').children;
-        for (var i = 0; i < images.length; i++) {
-            divCleanImg(images[i]);
-        }
-        var display_img = [];
-        if (index < 2) {
-            for (var i = 0; i < 5; i++) {
-                display_img.push(images[i]);
-            }
-        }
-        else if (index > images.length - 3) {
-            for (var i = images.length - 1; i > images.length - 6; i--) {
-                display_img.push(images[i]);
-            }
-        }
-        else {
-            display_img.push(images[index]);
-            display_img.push(images[index - 1]);
-            display_img.push(images[index - 2]);
-            display_img.push(images[index + 1]);
-            display_img.push(images[index + 2]);
-        }
-        for (var i = 0; i < display_img.length; i++) {
-            divCreateImg(display_img[i]);
-        }
-        divSetCurrent(images[index]);
-    }
-}
-
-function refreshPrev(images) {
-    if (current_index < images.length - 2) {
-        if (images[current_index - 3]) {
-            divCreateImg(images[current_index - 3]);
-            divCleanImg(images[current_index + 2]);
-        }
-    }
-
-}
 
 function refreshImgNavi(index) {
     //刷新导航条为以index为current_index的情况
@@ -262,7 +237,6 @@ function refreshImgNavi(index) {
         display_img.push(images[index + 1]);
         display_img.push(images[index + 2]);
     }
-    console.log(display_img);
     for (var i = 0; i < display_img.length; i++) {
         divCreateImg(display_img[i]);
     }

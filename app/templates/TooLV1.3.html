@@ -255,13 +255,7 @@
         <div id="sign_history">
             <p style="color:white;">分类信息</p>
         </div>
-        <div id="radio" class="sf-checked" type="radio">
-            {#            <div class="sf-checked-item" value='1' checked="checked">粘膜上</div>#}
-            {#            <div class="sf-checked-item" value='2'>粘膜下</div>#}
-            <!-- {% for x in mark_types %}
-            <div class="sf-checked-item" value='{{ x.id }}'>{{x.name}}</div>
-            {% endfor %} -->
-        </div>
+
         {% for x in folder.photos.all() %}
             <div id="decete_info_{{ x.id }}" style="display:none;">
                 <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
@@ -286,31 +280,14 @@
     );
 </script>
 <script>
-    $('#radio').sfcheckbox();
-    //上传界面创建分类数组，动态绑定到弹出框分类
-    var sign_class;
-    var sign_class_get = [
-        {classify: "正常"}, {classify: "病变前Ⅰ期"}, {classify: "病变前Ⅱ期"}, {classify: "病变"}
-    ];
-    //标注模态框Vue
-    var history_model;
-    //图像上传数组
     var img_files = [];
     //缩放比例
     var scale = 1;
-    //居中显示图像
-    var img_PaddingTop = 0;
-    var img_Paddingleft = 0;
     //当前图像索引
     var current_index = 0;
     /*<-->*/
-    //横向滑动
-    var slider_horizontal = document.getElementById("horizontal");
-    //纵向滑动
-    var slider_vertical = document.getElementById("vertical");
     //页面加载
     $(document).ready(function () {
-        var classify = $("#classify").val();
         $("#scroll_Thumb").css("margin-left", ((_marked / _image_count) * 100) + "%");
         $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
         $("#scrollBarTxt").html(_marked + "/" + _image_count);
@@ -321,29 +298,6 @@
         //加载第一张
         imageLoad(0);
 
-        history_model = new Vue({
-            el: '#history_model',
-            data: {
-                items: [
-                    /*开始为空，
-                    若后台加载当前已标注的信息，则使用vue特有的push方法重新循环push加载的数组
-                    example1.items.push(array[index])*/
-                    // { name: 'Foo',id:"0" },
-                    // { name: 'Bar',id:"1" }
-                ]
-            }
-        });
-
-        sign_class = new Vue({
-            el: '#classify',
-            data: {
-                items: []
-            }
-        });
-        //根据分类动态创建下拉列表
-        for (var i = 0; i < sign_class_get.length; i++) {
-            sign_class.items.push(sign_class_get[i]);
-        }
         $("#vertical01").slider({
             value: 0,
             formatter: function (value) {
@@ -351,12 +305,9 @@
             }
         }).on('slide', function (slideEvt) {
             //当滚动时触发
-            //console.info(slideEvt);
             //获取当前滚动的值，可能有重复
-            // console.info(slideEvt.value);
         }).on('change', function (e) {
             //当值发生改变的时候触发
-            //console.info(e);
             //获取旧值和新值
             vertical(e.value.newValue);
         });
@@ -367,12 +318,9 @@
             }
         }).on('slide', function (slideEvt) {
             //当滚动时触发
-            //console.info(slideEvt);
             //获取当前滚动的值，可能有重复
-            // console.info(slideEvt.value);
         }).on('change', function (e) {
             //当值发生改变的时候触发
-            //console.info(e);
             //获取旧值和新值
             horizontal(e.value.newValue);
         });
@@ -398,9 +346,7 @@
 <script>
     var mark_url = "";
     $(document).ready(function () {
-        var to_get_img = img_files[current_index].split('/');
-        var img_id = to_get_img[to_get_img.length - 1];
-        mark_url = "/mark/" + img_id;
+        mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
         $("#type_titps").html($("#type_select option:selected").text());
         $("#type_select").change(function () {
             $("#type_titps").html($("#type_select option:selected").text());
@@ -430,17 +376,15 @@
                 }
             });
         });
+        //生成图像导航栏并跳转到第一页
         createImgNavi();
         refreshImgNavi(0);
     });
     $(function () {
         $('#change_img').click(function () {//ID为test的元素点击时
-            var to_get_img = img_files[current_index].split('/');
-            var img_id = to_get_img[to_get_img.length - 1];
-            mark_url = "/mark/" + img_id;
+            mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
         });
     });
-
 </script>
 
 </body>
