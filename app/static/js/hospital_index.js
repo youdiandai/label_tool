@@ -159,9 +159,10 @@ $("#H_signclass").on("click", function () {
                     type: 'get',
                     dataType: 'json',
                     success: function (data) {
-                        _track = document.getElementById("scroll_Track");
+                        refreshImgStatus(data.images);
+                        var _track = document.getElementById("scroll_Track");
                         // _thump = document.getElementById('scroll_Thumb');
-                        _barText = document.getElementById('scrollBarTxt');
+                        var _barText = document.getElementById('scrollBarTxt');
                         _track.style.width = ((data.marked / data._count) * 100) + '%';
                         // _thump.style.marginLeft = ((data.marked / data._count) * 100) + '%';
                         _barText.textContent = data.marked + '/' + data._count;

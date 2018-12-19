@@ -22,22 +22,86 @@ function createImgNavi() {
         divCreateImg(image_divs[i]);
     }
     image_divs[0].children[0].style.border = 'red 4px solid';
+    $.ajax({
+        url: '/folder/mark_count/' + folder_id,
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+            refreshImgStatus(data.images);
+        },
+        error: function (xhr) {
+            //console.error('出错了');
+        }
+    });
 }
 
 function divCreateImg(div) {
     //在imageDiv标签内部创建img图片，使用div的属性，并设置图片点击后跳转
+    div.style.display = null;
     var img = document.createElement('img');
     img.src = div.getAttribute('img_src');
     img.className = 'little_img';
     img.onclick = function () {
         refreshImgNavi(parseInt(img.parentElement.id.split('_')[2]));
     };
+    var _status_div = null;
+    if (div.childElementCount > 0) {
+        _status_div = div.firstChild;
+        div.innerHTML = ""
+    }
     div.appendChild(img);
+    if (_status_div) {
+        div.appendChild(_status_div);
+    }
+};
+
+function addImgStatus(div, index, status) {
+    //给div添加图片状态
+    if (status[index].marked) {
+        var flag = false;
+        for (var i = 0; i < div.children.length; i++) {
+            if (div.children[i].tagName === 'DIV') {
+                flag = true;
+                div.children[i].setAttribute('data-text', status[index].type)
+            }
+        }
+        if (flag) {
+
+        }
+        else {
+            var new_div = document.createElement('div');
+            new_div.className = 'tiny_div';
+            new_div.setAttribute('data-text', status[index].type);
+            new_div.onclick = function () {
+                refreshImgNavi(parseInt(new_div.parentElement.id.split('_')[2]));
+            };
+            div.appendChild(new_div)
+        }
+    }
 }
 
+function refreshImgStatus(status) {
+    var images = document.getElementById('little_images').children;
+    for (var i = 0; i < images.length; i++) {
+        addImgStatus(images[i], i, status)
+    }
+}
+
+
 function divCleanImg(div) {
-    //清楚div中的图片
+    //清除div中的图片
+    div.style.display = 'none';
+    var _tmp = null;
+    if (div.childElementCount === 2) {
+        _tmp = div.children[1];
+    }
+    if (div.childElementCount === 1 && div.firstChild.tagName === 'DIV') {
+        _tmp = div.firstChild;
+    }
     div.innerHTML = "";
+    if (_tmp) {
+        div.appendChild(_tmp)
+    }
 }
 
 function divSetCurrent(div) {
@@ -88,17 +152,17 @@ function viewNext() {
     var images = document.getElementById('little_images').children;
     var showing_img = [];
     for (var i = 0; i < images.length; i++) {
-        if (images[i].childElementCount > 0) {
+        if (images[i].childElementCount > 1 || (images[i].childElementCount > 0 && images[i].firstChild.tagName === 'IMG')) {
             showing_img.push(images[i])
         }
     }
+    console.log(showing_img);
     var _next = showing_img[showing_img.length - 1].nextElementSibling;
     if (_next) {
-        divCreateImg(showing_img[showing_img.length - 1].nextElementSibling);
+        divCreateImg(_next);
         if (parseInt(_next.id.split('_')[2]) === current_index) {
             divSetCurrent(_next);
         }
-
         divCleanImg(showing_img[0])
     }
 }
@@ -108,7 +172,7 @@ function viewPrev() {
     var images = document.getElementById('little_images').children;
     var showing_img = [];
     for (var i = 0; i < images.length; i++) {
-        if (images[i].childElementCount > 0) {
+        if (images[i].childElementCount > 1 || (images[i].childElementCount > 0 && images[i].firstChild.tagName === 'IMG')) {
             showing_img.push(images[i])
         }
     }
@@ -198,6 +262,7 @@ function refreshImgNavi(index) {
         display_img.push(images[index + 1]);
         display_img.push(images[index + 2]);
     }
+    console.log(display_img);
     for (var i = 0; i < display_img.length; i++) {
         divCreateImg(display_img[i]);
     }
@@ -205,21 +270,4 @@ function refreshImgNavi(index) {
     current_index = index;
     mark_url = "/mark/" + images[index].getAttribute('img_src').split('/')[2];
     imageLoad(current_index);
-    $.ajax({
-        url: '/folder/mark_count/' + folder_id,
-        type: 'get',
-        dataType: 'json',
-        success: function (data) {
-            var _track = document.getElementById("scroll_Track");
-            var _barText = document.getElementById('scrollBarTxt');
-            _track.style.width = ((data.marked / data._count) * 100) + '%';
-            _barText.textContent = data.marked + '/' + data._count;
-            $("#scrollBarTxt").html(data.marked + "/" + data._count);
-            if (data.images[current_index].marked) {
-                $(".tagg_results").html("分类信息:" + data.images[current_index].type);
-            }
-        },
-        error: function (xhr) {
-        }
-    });
 }

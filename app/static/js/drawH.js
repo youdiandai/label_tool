@@ -91,9 +91,10 @@ $("#previous").on("click", function () {
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                _track = document.getElementById("scroll_Track");
+                refreshImgStatus(data.images);
+                var _track = document.getElementById("scroll_Track");
                 // _thump = document.getElementById('scroll_Thumb');
-                _barText = document.getElementById('scrollBarTxt');
+                var _barText = document.getElementById('scrollBarTxt');
                 _track.style.width = ((data.marked / data._count) * 100) + '%';
                 // _thump.style.marginLeft = ((data.marked / data._count) * 100) + '%';
                 _barText.textContent = data.marked + '/' + data._count;
@@ -109,6 +110,7 @@ $("#previous").on("click", function () {
                 //console.error('出错了');
             }
         });
+
     } else {
         alert("已经是第一张了！");
     }
@@ -119,12 +121,13 @@ $("#next").on("click", function () {
     if (current_index < img_files.length - 1) {
         current_index += 1;
         imageLoad(current_index);
-        //更新进度条
+        // 更新进度条
         $.ajax({
             url: '/folder/mark_count/' + folder_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
+                refreshImgStatus(data.images);
                 _track = document.getElementById("scroll_Track");
                 // _thump = document.getElementById('scroll_Thumb');
                 _barText = document.getElementById('scrollBarTxt');
