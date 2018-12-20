@@ -4,8 +4,8 @@ stages:
 build_product:
   stage: build_product
   only:
-      - master
+    - master
   script:
-    - whoami
+    - hostname
    tags:
     - 198
