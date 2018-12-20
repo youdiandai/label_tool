@@ -1,4 +1,4 @@
-pep8:
+label_tool:
   script:
     - whoami
   tags:
