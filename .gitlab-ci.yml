@@ -2,5 +2,7 @@ label_tool:
   script:
     - whoami
     - pwd
+    - cd /test
+    - git clone ssh://git@192.168.60.195:8001/3timess/label_tool.git
   tags:
     - test198
