@@ -1,11 +1,3 @@
-stages:
-  - build_product
-
-build_product:
-  stage: build_product
-  only:
-    - master
+pep8:
   script:
-    - hostname
-   tags:
-    - 198
+    - whoami
