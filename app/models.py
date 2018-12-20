@@ -49,15 +49,13 @@ def get_pic_info(path):
 
 def mycopyfile(srcfile, dstfile):
     if not os.path.isfile(srcfile):
-        print
-        "%s not exist!" % (srcfile)
+        print("%s not exist!" % (srcfile))
     else:
         fpath, fname = os.path.split(dstfile)  # 分离文件名和路径
         if not os.path.exists(fpath):
             os.makedirs(fpath)  # 创建路径
         shutil.copyfile(srcfile, dstfile)  # 复制文件
-        print
-        "copy %s -> %s" % (srcfile, dstfile)
+        print("copy %s -> %s" % (srcfile, dstfile))
 
 
 def split_data(full_list: list, train: int, test: int):
@@ -148,6 +146,7 @@ class Projects(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     project_type_id = db.Column(db.Integer, db.ForeignKey('project_types.id'))
+    original = db.Column(db.Boolean, default=True)
 
     # 多对多
     mark_types = db.relationship('MarkTypes', secondary=project_marktypes,
@@ -395,17 +394,19 @@ class Projects(db.Model):
             except:
                 return False
 
-    def __init__(self, name, user_id=None, project_type_id=None, **kwargs):
+    def __init__(self, name, user_id=None, project_type_id=None, tmp=False, **kwargs):
         super(Projects, self).__init__(**kwargs)
         self.name = name
         self.user_id = user_id
         self.project_type_id = project_type_id
-        self.url = self.create_project_folder()
-        if self.url is None:
-            raise Exception
+        if not tmp:
+            self.url = self.create_project_folder()
+            if self.url is None:
+                raise Exception
         else:
-            db.session.add(self)
-            db.session.commit()
+            self.original = False
+        db.session.add(self)
+        db.session.commit()
 
 
 class ProjectTypes(db.Model):
@@ -629,9 +630,6 @@ class Photos(db.Model):
 
     def __repr__(self):
         return '<Photos {}>'.format(self.id)
-
-
-
 
 
 class Labels(db.Model):

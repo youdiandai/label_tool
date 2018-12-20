@@ -90,7 +90,8 @@ def tool(folder_id):
         abort(403)
     if folder.project.project_type.name == '图像分类':
         mark_types = folder.project.mark_types.all()
-        return render_template('TooLV1.3.html', folder=folder, mark_types=mark_types)
+        return render_template('TooLV1.3.html', mark_types=mark_types, project_id=folder.project_id,
+                               photos=folder.photos.all())
     elif folder.project.project_type.name == '位置标注':
         label_types = folder.project.label_types.all()
         return render_template("Too_position.html", folder=folder, label_types=label_types)
