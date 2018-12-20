@@ -7,3 +7,5 @@ build_product:
       - master
   script:
     - whoami
+   tags:
+    - 198
