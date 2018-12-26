@@ -5,6 +5,7 @@ variables:
 label_tool:
   allow_failure: true
   script:
+    - pwd
     - docker build -t  $PROJECT_NAME .
     - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
     - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
