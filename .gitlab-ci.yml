@@ -1,11 +1,15 @@
 variables:
   PROJECT_NAME: label_tool
   OUT_PORT: 11000
+before_script:
+  allow_failure: true
+    - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
+    - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
+
+
 label_tool:
   script:
     - docker build -t  $PROJECT_NAME .
-    - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
-    - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
     - docker run --name $PROJECT_NAME -itd -p $OUT_PORT:9766 --mount type=bind,source=/userdata/gongjujiao,target=/gongjujiao  $PROJECT_NAME
 
   tags:
