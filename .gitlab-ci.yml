@@ -7,8 +7,6 @@ label_tool:
   script:
     - pwd
     - docker build -t  $PROJECT_NAME .
-    - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
-    - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
     - docker run --name $PROJECT_NAME -itd -p $OUT_PORT:9766 --mount type=bind,source=/userdata/label_tool,target=/userdata/label_tool  $PROJECT_NAME
 
   tags:
