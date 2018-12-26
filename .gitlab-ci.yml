@@ -3,6 +3,7 @@ variables:
   OUT_PORT: 11000
 
 label_tool:
+  allow_failure: true
   script:
     - docker build -t  $PROJECT_NAME .
     - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
