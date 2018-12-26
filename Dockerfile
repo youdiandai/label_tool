@@ -15,7 +15,7 @@ WORKDIR /app
 ADD . /app
 
 # Using pip:
-RUN python3 -m pip install  -i http://mirrors.aliyun.com/pypi/simple/ -r requirements.txt
+RUN python3 -m pip install  -r requirements.txt
 CMD ["gunicorn", "-c", "gunicorn.conf","manage:app"]
 
 # Using pipenv:
