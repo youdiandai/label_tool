@@ -13,4 +13,4 @@ label_tool:
     - docker run --name $PROJECT_NAME -itd -p $OUT_PORT:9766 $PROJECT_NAME
 
   tags:
-    - testing
+    - global
