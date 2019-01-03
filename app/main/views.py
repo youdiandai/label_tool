@@ -7,7 +7,7 @@ __mtime__ = '2018/5/15'
 """
 from . import main
 from flask import render_template, jsonify, request, send_from_directory, abort, redirect, url_for
-from ..models import Photos, Projects, ProjectTypes, LabelTypes, Labels, Folders, MarkTypes
+from ..models import Photos, Projects, ProjectTypes, LabelTypes, Labels, Folders, MarkTypes, Users
 from app import db
 import re
 from flask_login import current_user, login_required
@@ -44,6 +44,10 @@ def create_data():
     type3 = ProjectTypes.query.filter_by(name='文字标注').first()
     if not type3:
         ProjectTypes(id=3, name='文字标注')
+    if not Users.query.filter_by(username='admin').first():
+        Users('admin', 'admin')
+    if not Users.query.filter_by(username='administrator').first():
+        Users('administrator', 'administrator')
 
 
 @main.route('/')

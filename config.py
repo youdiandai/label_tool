@@ -31,9 +31,8 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'TEST_DATABASE_URL') or 'mysql+pymysql://root:vrarPIC123@192.168.60.198:3306/label_tool?charset=utf8mb4'
-    UPLOADPATH = '/userdata/label_tool/'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test-data-dev.sqlite')
+    UPLOADPATH = os.getcwd() + '/upload'
 
 
 class ProductionConfig(Config):
@@ -43,7 +42,8 @@ class ProductionConfig(Config):
 
 
 config = {
-    'development': DevelopmentConfig,
+    #'development': DevelopmentConfig,
+    'development': TestingConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
