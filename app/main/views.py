@@ -6,7 +6,7 @@ __author__ = 'changxin'
 __mtime__ = '2018/5/15'
 """
 from . import main
-from flask import render_template, jsonify, request, send_from_directory, abort, redirect, url_for
+from flask import render_template, jsonify, request, send_from_directory, abort, redirect, url_for, session, current_app
 from ..models import Photos, Projects, ProjectTypes, LabelTypes, Labels, Folders, MarkTypes, Users
 from app import db
 import re
@@ -14,12 +14,104 @@ from flask_login import current_user, login_required
 import os
 import json
 from ..models import save_xml, zipDir
+import hashlib
+from redis import Redis
+from datetime import datetime
 
 check_re = '20[0-9]{12,}'
 patient_id_re = '[0-9]{5,6}-[0-9]'
 allow_ext_lower = ['jpg', 'jpeg', 'png', 'bmp', 'dcm', 'ima']
 allow_ext = allow_ext_lower + [x.upper() for x in allow_ext_lower]
 
+
+########################################################
+# 功能函数
+########################################################
+
+class ImageUpload:
+    """
+    用户上传图片时用到的类
+    """
+
+    def __init__(self, user_id: int):
+        self.conn = Redis()
+        self.user_id = user_id
+
+    @staticmethod
+    def create_tmp_folder():
+        """
+        创建临时文件夹
+        :return:
+        """
+        base_url = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp')
+        if os.path.exists(base_url):
+            pass
+        else:
+            os.mkdir(base_url)
+
+    def create_utmp_folder(self):
+        """
+        创建用户文件夹
+        :return:
+        """
+        url = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(self.user_id))
+        if os.path.exists(url):
+            return url
+        else:
+            os.mkdir(url)
+            return url
+
+    def save_files(self, f):
+        """
+        将文件名保存在redis中并保存文件到临时路径下
+        :param f:
+        :return:
+        """
+        new_fname = hashlib.md5(
+            (f.filename.split('.')[0] + datetime.now().strftime("%s")).encode('utf-8')).hexdigest() + '.' + \
+                    f.filename.split('.')[-1]
+        _t = self.conn.hget("label_tool", str(self.user_id))
+        if _t:
+            t = json.loads(_t)
+        else:
+            t = []
+        t.append((f.filename, new_fname))
+        ImageUpload.create_tmp_folder()
+        user_url = self.create_utmp_folder()
+        f.save(os.path.join(user_url, new_fname))
+        self.conn.hset("label_tool", str(self.user_id), json.dumps(t))
+
+    def delete_file(self, name):
+        """
+        删除文件
+        :param name:文件名
+        :return:
+        """
+        files = self.get_files()
+        for x in range(len(files)):
+            if files[x][0] == name:
+                files = files[:x] + files[x + 1:]
+                break
+        self.conn.hset("label_tool", str(self.user_id), json.dumps(files))
+
+    def clean_files(self):
+        """
+        在redis中清空文件
+        :return:
+        """
+        self.conn.hdel("label_tool", str(self.user_id))
+
+    def get_files(self):
+        """
+        从redis获取用户上传的文件名列表
+        :return:
+        """
+        return json.loads(self.conn.hget("label_tool", str(self.user_id)))
+
+
+########################################################
+# 初始化
+########################################################
 
 @main.before_app_first_request
 def create_data():
@@ -50,6 +142,10 @@ def create_data():
         Users('administrator', 'administrator')
 
 
+########################################################
+# 路由
+########################################################
+
 @main.route('/')
 @login_required
 def project():
@@ -62,6 +158,72 @@ def project():
     projects = pagination.items
     _str = str
     return render_template('project.html', projects=projects, _str=_str, pagination=pagination)
+
+
+@main.route('/create_project1', methods=["POST", "GET"])
+def create_project1():
+    if request.method == "POST":
+        session['project_type'] = request.values.get('project_type')
+        session['project_name'] = request.values.get('project_name')
+        session['types'] = request.values.get('types')
+        # project_type = ProjectTypes.query.filter_by(name=request.values.get('project_type')).first().id
+        # pro_name = request.values.get('project_name')
+        # types = request.values.get('types')
+        # pro = Projects(name=pro_name, project_type_id=project_type, user_id=current_user.id)
+        # if project_type == ProjectTypes.query.filter_by(name="图像分类").first().id:
+        #     if types is '':
+        #         pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜上').first())
+        #         pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜下').first())
+        #         db.session.add(pro)
+        #         db.session.commit()
+        #     else:
+        #         for x in re.split('[,，]', types):
+        #             tmp_type = MarkTypes.query.filter_by(name=x).first()
+        #             mark_type = tmp_type if tmp_type is not None else MarkTypes(x)
+        #             pro.mark_types.append(mark_type)
+        #             db.session.add(pro)
+        #     db.session.commit()
+        # elif project_type == ProjectTypes.query.filter_by(name="位置标注").first().id:
+        #     if types is '':
+        #         pro.label_types.append(LabelTypes.query.filter_by(name="花").first())
+        #         pro.label_types.append(LabelTypes.query.filter_by(name="鸟").first())
+        #         pro.label_types.append(LabelTypes.query.filter_by(name="鱼").first())
+        #         pro.label_types.append(LabelTypes.query.filter_by(name="虫").first())
+        #         db.session.add(pro)
+        #     else:
+        #         for x in re.split('[,，]', types):
+        #             tmp_type = LabelTypes.query.filter_by(name=x).first()
+        #             label_type = tmp_type if tmp_type is not None else LabelTypes(x)
+        #             pro.label_types.append(label_type)
+        #             db.session.add(pro)
+        #     db.session.commit()
+        return redirect(url_for('main.create_project2'))
+    session['project_type'] = None
+    session['project_name'] = None
+    session['types'] = None
+    return render_template("create_project_1.html")
+
+
+@main.route('/create_project2', methods=['POST', 'GET'])
+def create_project2():
+    imp = ImageUpload(current_user.id)
+    if request.method == 'POST':
+        f = request.files.get('file')
+        imp.save_files(f)
+    else:
+        imp.clean_files()
+    return render_template("create_project_2.html")
+
+
+@main.route('/create_project_del', methods=["POST"])
+def create_project_del():
+    json = request.get_json()
+    print(json)
+    imp = ImageUpload(current_user.id)
+    name = request.get_json()['name']
+    print(name)
+    imp.delete_file(name)
+    return jsonify('success')
 
 
 @main.route('/folders/<int:project_id>')
@@ -101,46 +263,46 @@ def tool(folder_id):
         return render_template("Too_position.html", folder=folder, label_types=label_types)
 
 
-@main.route('/create_project', methods=['POST'])
-@login_required
-def create_project():
-    """
-    创建项目的路由
-    :return:
-    """
-    json = request.get_json()
-    project_type = ProjectTypes.query.filter_by(name=json['project_type']).first().id
-    pro_name = json['project_name']
-    types = json['types']
-    pro = Projects(name=pro_name, project_type_id=project_type, user_id=current_user.id)
-    if project_type == ProjectTypes.query.filter_by(name="图像分类").first().id:
-        if types is '':
-            pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜上').first())
-            pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜下').first())
-            db.session.add(pro)
-            db.session.commit()
-        else:
-            for x in re.split('[,，]', types):
-                tmp_type = MarkTypes.query.filter_by(name=x).first()
-                mark_type = tmp_type if tmp_type is not None else MarkTypes(x)
-                pro.mark_types.append(mark_type)
-                db.session.add(pro)
-        db.session.commit()
-    elif project_type == ProjectTypes.query.filter_by(name="位置标注").first().id:
-        if types is '':
-            pro.label_types.append(LabelTypes.query.filter_by(name="花").first())
-            pro.label_types.append(LabelTypes.query.filter_by(name="鸟").first())
-            pro.label_types.append(LabelTypes.query.filter_by(name="鱼").first())
-            pro.label_types.append(LabelTypes.query.filter_by(name="虫").first())
-            db.session.add(pro)
-        else:
-            for x in re.split('[,，]', types):
-                tmp_type = LabelTypes.query.filter_by(name=x).first()
-                label_type = tmp_type if tmp_type is not None else LabelTypes(x)
-                pro.label_types.append(label_type)
-                db.session.add(pro)
-        db.session.commit()
-    return jsonify({'status': 'succ'})
+# @main.route('/create_project', methods=['POST'])
+# @login_required
+# def create_project():
+#     """
+#     创建项目的路由
+#     :return:
+#     """
+#     json = request.get_json()
+#     project_type = ProjectTypes.query.filter_by(name=json['project_type']).first().id
+#     pro_name = json['project_name']
+#     types = json['types']
+#     pro = Projects(name=pro_name, project_type_id=project_type, user_id=current_user.id)
+#     if project_type == ProjectTypes.query.filter_by(name="图像分类").first().id:
+#         if types is '':
+#             pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜上').first())
+#             pro.mark_types.append(MarkTypes.query.filter_by(name='粘膜下').first())
+#             db.session.add(pro)
+#             db.session.commit()
+#         else:
+#             for x in re.split('[,，]', types):
+#                 tmp_type = MarkTypes.query.filter_by(name=x).first()
+#                 mark_type = tmp_type if tmp_type is not None else MarkTypes(x)
+#                 pro.mark_types.append(mark_type)
+#                 db.session.add(pro)
+#         db.session.commit()
+#     elif project_type == ProjectTypes.query.filter_by(name="位置标注").first().id:
+#         if types is '':
+#             pro.label_types.append(LabelTypes.query.filter_by(name="花").first())
+#             pro.label_types.append(LabelTypes.query.filter_by(name="鸟").first())
+#             pro.label_types.append(LabelTypes.query.filter_by(name="鱼").first())
+#             pro.label_types.append(LabelTypes.query.filter_by(name="虫").first())
+#             db.session.add(pro)
+#         else:
+#             for x in re.split('[,，]', types):
+#                 tmp_type = LabelTypes.query.filter_by(name=x).first()
+#                 label_type = tmp_type if tmp_type is not None else LabelTypes(x)
+#                 pro.label_types.append(label_type)
+#                 db.session.add(pro)
+#         db.session.commit()
+#     return jsonify({'status': 'succ'})
 
 
 @main.route('/create_folder', methods=['POST'])

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<1920>, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for("static",filename='css/reset.css') }}" type="text/css" media="all"/>
+    <link rel="stylesheet" href="{{ url_for("static",filename='css/sgin_step.css') }}" type="text/css" media="all"/>
+    <script src="{{ url_for("static",filename='js/jquery.1.11.1.js') }}"></script>
+    <title>Document</title>
+</head>
+
+<body>
+<div class="sgin_main">
+    <ul class="sgin_step">
+        <li class="sgin_step_li">
+            <p>
+                <img src="{{ url_for("static",filename="image/sign_icon1.png") }}">
+            </p>
+            <span>填写项目信息</span>
+        </li>
+        <li class="sgin_step_li">
+            <p>
+                <img src="{{ url_for("static",filename="image/sign_icon5.png") }}">
+            </p>
+            <span>上传文件</span>
+        </li>
+        <li class="sgin_step_li">
+            <p>
+                <img src="{{ url_for("static",filename="image/sign_icon6.png") }}">
+            </p>
+            <span>完成</span>
+        </li>
+    </ul>
+    <form method="POST" action="{{ url_for("main.create_project1") }}" autocomplete="on" enctype="multipart/form-data">
+        <div class="step_main">
+            <div class="step_line">
+                <div class="line-left">项目类型：</div>
+                <div class="line-right">
+                    <span class="span_select">
+                        <select class="line-select" id="project_type" name="project_type">
+                            <option selected value="图像分类">图像分类</option>
+                            <option value="位置标注">位置标注</option>
+                            <option value="文字标注">文字标注</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="step_line">
+                <div class="line-left">项目名称：</div>
+                <div class="line-right">
+                    <span class="span_input" id="project_">
+                        <input type="text" class="step-input" value="" id="project_name" name="project_name">
+                    </span>
+                </div>
+            </div>
+            <div class="step_line">
+                <div class="line-left">分类设置(逗号分隔)：</div>
+                <div class="line-right">
+                    <span class="span_input" id="project_">
+                        <input type="text" class="step-input" id="project_type_set" value="粘膜上,粘膜下" placeholder="粘膜上,粘膜下" name="types">
+                    </span>
+                </div>
+            </div>
+            <button value="下一步" class="next_btn">下一步</button>
+        </div>
+    </form>
+</div>
+
+</body>
+<script>
+    $(function () {
+        // 高度与点击切换
+        var clientheight = document.documentElement.clientHeight;
+        $(".sgin_main").get(0).style.height = clientheight - 52 + "px";
+        if ($(".next_btn").hasClass("unavailable")) {
+            $(".unavailable").attr("disabled", "disabled")
+        }
+    })
+
+
+</script>
+
+</html>
