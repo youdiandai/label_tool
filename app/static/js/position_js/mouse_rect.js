@@ -397,11 +397,11 @@ function dragCircle(e) {
     tbody.empty();
     var row_data
     $.ajax({
-        url: '/folder/label_count/' + folder_id,
+        url: '/project/label_count/' + p_id,
         type: 'get',
         dataType: 'json',
         success: function (data) {
-            $("#export_coordinate").attr("href","/download/export_xml/"+ folder_id)
+            $("#export_coordinate").attr("href","/download/export_xml/"+ p_id)
             var lable_ed;
             for(var i=0; i<data._count;i++){
                 if(data.images[i].labeled == true){

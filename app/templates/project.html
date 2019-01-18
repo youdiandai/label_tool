@@ -77,7 +77,8 @@
 
         <div class="col-md-2">
             <div class="project" style="text-align:center;" data-toggle="modal" data-target="#myModal">
-                <a href="{{ url_for("main.create_project1") }}" class="add"><span class="glyphicon glyphicon-plus-sign"></span></a>
+                <a href="{{ url_for("main.create_project1") }}" class="add"><span
+                        class="glyphicon glyphicon-plus-sign"></span></a>
                 <p class="white">新建标注项目</p>
             </div>
         </div>
@@ -156,7 +157,7 @@
     {% for pro in projects %}
         $(".body_container").get(0).style.height = clientheight - 52 + "px";
         $("#floder{{ pro.id }}").on("click", function () {
-            window.location.href = "{{ url_for('.folders',project_id=pro.id) }}";
+            window.location.href = "{{ url_for('.ptool',project_id=pro.id) }}";
         });
     {% endfor %}
     $(".remove").click(function () {

@@ -22,7 +22,7 @@ function createImgNavi() {
     }
     image_divs[0].children[0].style.border = 'red 4px solid';
     $.ajax({
-        url: '/folder/mark_count/' + folder_id,
+        url: '/project/mark_count/' + p_id,
         type: 'get',
         dataType: 'json',
         success: function (data) {

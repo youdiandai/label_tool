@@ -192,7 +192,7 @@ def end_add(p_id):
                 pass
             else:
                 Photos(x[0], x[1], folder.id)
-    return redirect(url_for("main.project"))
+    return redirect(url_for("main.ptool", project_id=p_id))
 
 
 @main.route('/create_project_del', methods=["POST"])
@@ -327,21 +327,21 @@ def mark(photo_id):
     return jsonify({'status': 'succ'})
 
 
-@main.route('/folder/mark_count/<int:folder_id>')
-def mark_count(folder_id: int):
-    folder = Folders.query.get_or_404(folder_id)
-    return jsonify({'marked': folder.photos.filter_by(marked=True).count(), '_count': folder.photos.count(),
+@main.route('/project/mark_count/<int:p_id>')
+def mark_count(p_id: int):
+    project = Projects.query.get_or_404(p_id)
+    return jsonify({'marked': project.photos.filter_by(marked=True).count(), '_count': project.photos.count(),
                     'images': [{'name': x.name, 'marked': x.marked,
                                 'type': x.mark_type.name if x.marked else '未设置'} for x in
-                               folder.photos.all()], 'txt_url': url_for('main.export_txt', folder_id=folder_id)})
+                               project.photos.all()], 'txt_url': url_for('main.export_txt', folder_id=p_id)})
 
 
-@main.route('/folder/label_count/<int:folder_id>')
-def label_count(folder_id: int):
-    folder = Folders.query.get_or_404(folder_id)
-    return jsonify({'labeled': folder.photos.filter_by(labeled=True).count(), '_count': folder.photos.count(),
+@main.route('/project/label_count/<int:p_id>')
+def label_count(p_id: int):
+    project = Projects.query.get_or_404(p_id)
+    return jsonify({'labeled': project.photos.filter_by(labeled=True).count(), '_count': project.photos.count(),
                     'images': [{'name': x.name, 'labeled': x.labeled,
-                                'labels': x.labels_data} for x in folder.photos.all()]})
+                                'labels': x.labels_data} for x in project.photos.all()]})
 
 
 @main.route('/download/export_txt/<int:folder_id>')

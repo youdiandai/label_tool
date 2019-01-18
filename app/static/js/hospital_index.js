@@ -82,7 +82,7 @@ $("#success").on("click", function () {
                     current_index += 1;
                     imageLoad(current_index);
                     $.ajax({
-                        url: '/folder/mark_count/' + folder_id,
+                        url: '/project/mark_count/' + p_id,
                         type: 'get',
                         dataType: 'json',
                         success: function (data) {
@@ -155,7 +155,7 @@ $("#H_signclass").on("click", function () {
                 }
                 //更新进度条
                 $.ajax({
-                    url: '/folder/mark_count/' + folder_id,
+                    url: '/project/mark_count/' + p_id,
                     type: 'get',
                     dataType: 'json',
                     success: function (data) {

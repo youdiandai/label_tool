@@ -133,7 +133,7 @@
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=project_id) }}">
+            <a class="navbar-brand text" href="{{ url_for('.project') }}">
                 <
                 <返回
             </a>
@@ -250,6 +250,16 @@
                 </a>
             </div>
         </div>
+        <div class="img_Tool">
+            <div class="tool_div">
+                <a href="{{ url_for("main.add_photos",p_id=project_id) }}"
+                   class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-hand-o-left fa-2x"></i>
+                    <span class="toolbar-text">添加图片</span>
+                </a>
+            </div>
+        </div>
     </div>
     <div class="right_context">
         <div id="sign_history">
@@ -270,7 +280,7 @@
     var img_status;
     var _marked = 0;
     var _image_count;
-    var folder_id;
+    var p_id;
     $(document).ready(function () {
             img_status = new Map([{% for x in photos %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
             for (var value of img_status.keys()) {
@@ -280,7 +290,7 @@
                     _marked += 1;
                 }
             }
-            folder_id = parseInt(document.location.pathname.split('/')[2]);
+            p_id = parseInt(document.location.pathname.split('/')[2]);
             _image_count = {{ photos.__len__() }};
         }
     );
@@ -361,7 +371,7 @@
             var row_data;
             $.ajax({
                 type: 'GET',
-                url: '/folder/mark_count/' + folder_id,
+                url: '/project/mark_count/' + p_id,
                 contentType: 'application/json; charset=UTF-8',
                 dataType: 'json',
                 async: false,

@@ -56,7 +56,7 @@ function imageLoad(index) {
         $("#horizontal01").slider("setValue", -img_Paddingleft);
 //更新进度条
         $.ajax({
-            url: '/folder/label_count/' + folder_id,
+            url: '/project/label_count/' + p_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {

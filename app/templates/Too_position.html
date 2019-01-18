@@ -43,7 +43,7 @@
             </ul>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <a class="navbar-brand text" href="{{ url_for('.folders',project_id=folder.project_id) }}"><
+            <a class="navbar-brand text" href="{{ url_for('.project') }}"><
                 <返回
             </a>
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
@@ -193,6 +193,15 @@
                 </a>
             </div>
         </div>
+        <div class="img_Tool">
+            <div class="tool_div">
+                <a href="{{ url_for("main.add_photos",p_id=project.id) }}" class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb"
+                   style="text-decoration:none;" aria-expanded="false">
+                    <i class="fa fa-hand-o-left fa-2x"></i>
+                    <span class="toolbar-text">添加图片</span>
+                </a>
+            </div>
+        </div>
     </div>
     <div class="right_context">
         <div id="sign_history">
@@ -267,15 +276,15 @@
     //页面加载
     var _marked;
     var _image_count;
-    var folder_id;
+    var p_id;
     $(document).ready(function () {
-        _marked = {{ folder.photos.filter_by(labeled=True).count() }};
-        _image_count = {{ folder.photos.count() }};
-        folder_id = {{ folder.id }}
+        _marked = {{ project.photos.filter_by(labeled=True).count() }};
+        _image_count = {{ project.photos.count() }};
+        p_id = {{ project.id }}
             $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
         $("#scrollBarTxt").html(_marked + "/" + _image_count);
         //图像数组
-        img_files = [{% for x in folder.photos.all() %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}]
+        img_files = [{% for x in project.photos.all() %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}]
         isRectEdit = true;
         //3个工具参数
         inclientHeight(3);

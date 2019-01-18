@@ -83,7 +83,7 @@ $("#previous").on("click", function () {
         imageLoad(current_index);
         //更新进度条
         $.ajax({
-            url: '/folder/mark_count/' + folder_id,
+            url: '/project/mark_count/' + p_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -119,7 +119,7 @@ $("#next").on("click", function () {
         imageLoad(current_index);
         // 更新进度条
         $.ajax({
-            url: '/folder/mark_count/' + folder_id,
+            url: '/project/mark_count/' + p_id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
