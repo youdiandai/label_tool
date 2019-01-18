@@ -164,6 +164,37 @@ def create_project3(create_token):
         abort(404)
 
 
+@main.route('/add_photos/<int:p_id>', methods=["POST", "GET"])
+def add_photos(p_id):
+    imp = ImageUpload(current_user.id)
+    if request.method == "POST":
+        f = request.files.get('file')
+        imp.save_tfile(f)
+    else:
+        imp.reset()
+    return render_template("add_photos.html", p_id=p_id)
+
+
+@main.route('/end_add/<int:p_id>')
+def end_add(p_id):
+    imp = ImageUpload(current_user.id)
+    file_names = imp.get_files()
+    folder = Folders(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"), p_id, current_user.id)
+    for x in file_names:
+        ext = x[0].split('.')[1]
+        if ext in allow_ext:
+            try:
+                p_path = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(current_user.id),
+                                      x[1])
+                p_newpath = os.path.join(folder.url, x[1])
+                mycopyfile(p_path, p_newpath)
+            except IOError:
+                pass
+            else:
+                Photos(x[0], x[1], folder.id)
+    return redirect(url_for("main.project"))
+
+
 @main.route('/create_project_del', methods=["POST"])
 def create_project_del():
     json = request.get_json()
@@ -210,6 +241,26 @@ def tool(folder_id):
     elif folder.project.project_type.name == '位置标注':
         label_types = folder.project.label_types.all()
         return render_template("Too_position.html", folder=folder, label_types=label_types)
+
+
+@main.route('/ptool/<int:project_id>')
+@login_required
+def ptool(project_id):
+    """
+    进行标记的页面
+    :param project_id:
+    :return:
+    """
+    project = Projects.query.get_or_404(project_id)
+    if project.user_id != current_user.id:
+        abort(403)
+    if project.project_type.name == '图像分类':
+        mark_types = project.mark_types.all()
+        return render_template('TooLV1.3.html', mark_types=mark_types, project_id=project_id,
+                               photos=project.photos.all())
+    elif project.project_type.name == '位置标注':
+        label_types = project.label_types.all()
+        return render_template("Too_position.html", project=project, label_types=label_types)
 
 
 @main.route('/create_folder', methods=['POST'])
@@ -280,7 +331,7 @@ def mark(photo_id):
 def mark_count(folder_id: int):
     folder = Folders.query.get_or_404(folder_id)
     return jsonify({'marked': folder.photos.filter_by(marked=True).count(), '_count': folder.photos.count(),
-                    'images': [{'name': x.name.split('/')[1], 'marked': x.marked,
+                    'images': [{'name': x.name, 'marked': x.marked,
                                 'type': x.mark_type.name if x.marked else '未设置'} for x in
                                folder.photos.all()], 'txt_url': url_for('main.export_txt', folder_id=folder_id)})
 
@@ -289,7 +340,7 @@ def mark_count(folder_id: int):
 def label_count(folder_id: int):
     folder = Folders.query.get_or_404(folder_id)
     return jsonify({'labeled': folder.photos.filter_by(labeled=True).count(), '_count': folder.photos.count(),
-                    'images': [{'name': x.name.split('/')[1], 'labeled': x.labeled,
+                    'images': [{'name': x.name, 'labeled': x.labeled,
                                 'labels': x.labels_data} for x in folder.photos.all()]})
 
 
