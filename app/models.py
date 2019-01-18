@@ -17,70 +17,10 @@ from flask_login import AnonymousUserMixin
 from app import db, login_manager
 from uuid import uuid4
 import shutil
-import random
 import math
-import zipfile
-from PIL import Image
+
 from xml.dom.minidom import Document
-
-
-def make_xml_son_el(doc, name, father, text=None):
-    son = doc.createElement(name)
-    if text:
-        text_node = doc.createTextNode(str(text))
-        son.appendChild(text_node)
-    father.appendChild(son)
-    return son
-
-
-def save_xml(doc, path):
-    with open(path, 'w') as f:
-        doc.writexml(f, indent='\t', newl='\n', addindent='\t', encoding='utf-8')
-
-
-def get_pic_info(path):
-    _img = Image.open(path)
-    width, height = _img.size
-    channel = 1
-    if _img.mode == "RGB":
-        channel = 3
-    return width, height, channel
-
-
-def mycopyfile(srcfile, dstfile):
-    if not os.path.isfile(srcfile):
-        print("%s not exist!" % (srcfile))
-    else:
-        fpath, fname = os.path.split(dstfile)  # 分离文件名和路径
-        if not os.path.exists(fpath):
-            os.makedirs(fpath)  # 创建路径
-        shutil.copyfile(srcfile, dstfile)  # 复制文件
-        print("copy %s -> %s" % (srcfile, dstfile))
-
-
-def split_data(full_list: list, train: int, test: int):
-    random.shuffle(full_list)
-    _train = int(len(full_list) * (train / 100))
-    _test = _train + int(len(full_list) * (test / 100))
-    return full_list[:_train], full_list[_train:_test], full_list[_test:]
-
-
-def zipDir(dirpath, outFullName):
-    """
-    压缩指定文件夹
-    :param dirpath: 目标文件夹路径
-    :param outFullName: 压缩文件保存路径+xxxx.zip
-    :return: 无
-    """
-    zip = zipfile.ZipFile(outFullName, "w", zipfile.ZIP_DEFLATED)
-    for path, dirnames, filenames in os.walk(dirpath):
-        # 去掉目标跟路径，只对目标文件夹下边的文件及文件夹进行压缩
-        fpath = path.replace(dirpath, '')
-
-        for filename in filenames:
-            zip.write(os.path.join(path, filename), os.path.join(fpath, filename))
-    zip.close()
-
+from .tools import make_xml_son_el, save_xml, get_pic_info, mycopyfile, split_data, zipDir
 
 allow_ext_lower = ['jpg', 'jpeg', 'png', 'bmp', 'dcm', 'ima']
 allow_ext = allow_ext_lower + [x.upper() for x in allow_ext_lower]
@@ -593,15 +533,12 @@ class Photos(db.Model):
     def labels_data(self):
         return [x.data for x in self.labels.all()]
 
-    def __init__(self, file, folder_id, **kwargs):
+    def __init__(self, filename, new_name, folder_id, **kwargs):
         super(Photos, self).__init__(**kwargs)
-        self.name = file.filename
-        ext = file.filename.split('.')[1]
+        self.name = filename
         self.folder_id = folder_id
         folder = Folders.query.get_or_404(folder_id)
-        self.url = os.path.join(folder.url,
-                                hashlib.md5(self.name.split('.')[0].encode('utf-8')).hexdigest() + '.' + ext)
-        file.save(self.url)
+        self.url = os.path.join(folder.url, new_name)
         self.user_id = folder.user_id
         self.project_id = folder.project_id
         width, height, channel = get_pic_info(self.url)

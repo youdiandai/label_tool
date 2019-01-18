@@ -37,7 +37,7 @@
     </ul>
     <div class="step_main">
         <div id="dropz" class="dropzone"></div>
-        <input type="button" value="下一步" class="next_btn">
+        <a href="{{ url_for("main.create_project3",create_token=create_token) }}" class="next_btn">下一步</a>
     </div>
 </div>
 </body>
@@ -52,7 +52,7 @@
     })
     // 上传插件
     $("#dropz").dropzone({
-        url: "{{ url_for("main.create_project2") }}",
+        url: "{{ url_for("main.create_project2",create_token=create_token) }}",
         maxFilesize: 1024,
         acceptedFiles: "image/*",
         autoProcessQueue: true,
