@@ -7,7 +7,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "11000:80"
+      - "11000:8000"
     networks:
       - webnet
   redis:
