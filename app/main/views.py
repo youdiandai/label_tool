@@ -98,6 +98,7 @@ def create_project2(create_token):
         if request.method == 'POST':
             f = request.files.get('file')
             imp.save_tfile(f)
+            return jsonify({"code":200})
         else:
             imp.reset()
         return render_template("create_project_2.html", create_token=create_token)
