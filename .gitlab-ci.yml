@@ -10,7 +10,7 @@ label_tool:
     - docker build -t  $PROJECT_NAME .
     - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
     - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
-    - docker run --name $PROJECT_NAME -itd -p $OUT_PORT:9766 $PROJECT_NAME
+    - docker stack deploy -c docker-compose.yml label_tool
 
   tags:
     - global

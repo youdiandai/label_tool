@@ -1,7 +1,7 @@
 FROM ubuntu-with-python
 
 LABEL Name=label_tool Version=0.0.1
-EXPOSE 9766
+EXPOSE 80
 
 WORKDIR /app
 ADD . /app
