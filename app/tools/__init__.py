@@ -25,10 +25,12 @@ class ImageUpload:
     @staticmethod
     def create_redis_conn():
         conn = Redis()
-        if conn.ping():
-            return conn
-        else:
+        try:
+            conn.ping()
+        except Exception:
             return Redis(host="redis")
+        else:
+            return conn
 
     def __init__(self, user_id: int):
         self.conn = ImageUpload.create_redis_conn()
