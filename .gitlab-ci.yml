@@ -8,8 +8,6 @@ label_tool:
   script:
     - pwd
     - docker build -t  $PROJECT_NAME .
-    - docker stop $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
-    - docker rm $(docker ps -a | grep "$PROJECT_NAME" | awk '{print $1 }')
     - docker stack deploy -c docker-compose.yml label_tool
 
   tags:
