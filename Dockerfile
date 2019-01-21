@@ -5,6 +5,7 @@ EXPOSE 80
 
 WORKDIR /app
 ADD . /app
+ENV LANG C.UTF-8
 
 # Using pip:
 RUN mkdir upload
