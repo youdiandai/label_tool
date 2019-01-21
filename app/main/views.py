@@ -98,7 +98,7 @@ def create_project2(create_token):
         if request.method == 'POST':
             f = request.files.get('file')
             imp.save_tfile(f)
-            return jsonify({"code":200})
+            return jsonify({"code": 200})
         else:
             imp.reset()
         return render_template("create_project_2.html", create_token=create_token)
@@ -334,7 +334,7 @@ def mark_count(p_id: int):
     return jsonify({'marked': project.photos.filter_by(marked=True).count(), '_count': project.photos.count(),
                     'images': [{'name': x.name, 'marked': x.marked,
                                 'type': x.mark_type.name if x.marked else '未设置'} for x in
-                               project.photos.all()], 'txt_url': url_for('main.export_txt', folder_id=p_id)})
+                               project.photos.all()]})
 
 
 @main.route('/project/label_count/<int:p_id>')
@@ -345,27 +345,27 @@ def label_count(p_id: int):
                                 'labels': x.labels_data} for x in project.photos.all()]})
 
 
-@main.route('/download/export_txt/<int:folder_id>')
-def export_txt(folder_id: int):
-    folder = Folders.query.get_or_404(folder_id)
-    comparison = [(x.name.split('/')[1], x.mark_type.name if x.marked else '未设置') for x in folder.photos.all()]
-    with open(os.path.join(folder.url, 'export.txt'), "w") as f:
-        for x in comparison:
-            f.write(x[0] + " " + x[1] + '\n')
-    return send_from_directory(folder.url, 'export.txt', as_attachment=True)
+# @main.route('/download/export_txt/<int:folder_id>')
+# def export_txt(folder_id: int):
+#     folder = Folders.query.get_or_404(folder_id)
+#     comparison = [(x.name.split('/')[1], x.mark_type.name if x.marked else '未设置') for x in folder.photos.all()]
+#     with open(os.path.join(folder.url, 'export.txt'), "w") as f:
+#         for x in comparison:
+#             f.write(x[0] + " " + x[1] + '\n')
+#     return send_from_directory(folder.url, 'export.txt', as_attachment=True)
 
 
-@main.route('/download/export_xml/<int:folder_id>')
-def export_xml(folder_id: int):
-    folder = Folders.query.get_or_404(folder_id)
-    export_path = folder.create_export_path()
-    for x in folder.photos.filter_by(labeled=True).all():
-        photo_name = x.name.split('/')[1].split('.')[0] + '.' + 'xml'
-        save_xml(x.get_xml('xml', photo_name), os.path.join(export_path, photo_name))
-    if os.path.exists(os.path.join(folder.url, 'export_xml.zip')):
-        os.remove(os.path.join(folder.url, 'export_xml.zip'))
-    zipDir(export_path, os.path.join(folder.url, 'export_xml.zip'))
-    return send_from_directory(folder.url, 'export_xml.zip', as_attachment=True)
+# @main.route('/download/export_xml/<int:folder_id>')
+# def export_xml(folder_id: int):
+#     folder = Folders.query.get_or_404(folder_id)
+#     export_path = folder.create_export_path()
+#     for x in folder.photos.filter_by(labeled=True).all():
+#         photo_name = x.name.split('/')[1].split('.')[0] + '.' + 'xml'
+#         save_xml(x.get_xml('xml', photo_name), os.path.join(export_path, photo_name))
+#     if os.path.exists(os.path.join(folder.url, 'export_xml.zip')):
+#         os.remove(os.path.join(folder.url, 'export_xml.zip'))
+#     zipDir(export_path, os.path.join(folder.url, 'export_xml.zip'))
+#     return send_from_directory(folder.url, 'export_xml.zip', as_attachment=True)
 
 
 @main.route('/label/<int:photo_id>', methods=['POST'])
@@ -394,9 +394,9 @@ def label(photo_id: int):
     return jsonify({'status': 'successful'})
 
 
-@main.route('/export/<int:project_id>', methods=["GET", "POST"])
+@main.route('/export_p/<int:project_id>', methods=["GET", "POST"])
 @login_required
-def export(project_id: int):
+def export_p(project_id: int):
     data = request.get_json()
     project = Projects.query.get_or_404(project_id)
     train = int(data['train'])
@@ -404,6 +404,11 @@ def export(project_id: int):
     val = 100 - (train + test)
     zip_name = project.export_data(train, test, val)
     return send_from_directory(project.url, zip_name, as_attachment=True)
+
+
+@main.route('/export/<int:project_id>')
+def export(project_id: int):
+    return render_template("export.html", project_id=project_id)
 
 
 @main.route('/export_by_url/<int:project_id>/<int:train>/<int:test>', methods=["GET", "POST"])
