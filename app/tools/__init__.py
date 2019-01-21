@@ -22,8 +22,16 @@ class ImageUpload:
     用户上传图片时用到的类
     """
 
+    @staticmethod
+    def create_redis_conn():
+        conn = Redis()
+        if conn.ping():
+            return conn
+        else:
+            return Redis(host="redis")
+
     def __init__(self, user_id: int):
-        self.conn = Redis()
+        self.conn = ImageUpload.create_redis_conn()
         self.user_id = user_id
 
     @staticmethod
