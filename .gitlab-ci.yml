@@ -8,7 +8,6 @@ label_tool:
   script:
     - pwd
     - docker build -t  $PROJECT_NAME .
-    - docker service rm $(docker service ls | grep "label_too" | awk '{print $1 }')
     - docker stack deploy -c docker-compose.yml label_tool
 
   tags:
