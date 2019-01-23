@@ -297,7 +297,7 @@ a.buttom_btn:focus{
     display: none;
 }
 .choice_folder_main{
-    width: 200px;
+    width: 300px;
     height: 140px;
     background: #3e3e40;
     border: 2px solid gray;
@@ -322,6 +322,7 @@ a.buttom_btn:focus{
     height: 30px;
     border: 0px;
     border-radius: 5px;
+    color: #000;
 }
 .choice_title{
     margin-top: 34px;
