@@ -285,3 +285,44 @@ a.buttom_btn:focus{
 #H_signclass{
     cursor: pointer;
 }
+.choice_folder{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    z-index: 4;
+    display: none;
+}
+.choice_folder_main{
+    width: 200px;
+    height: 140px;
+    background: #3e3e40;
+    border: 2px solid gray;
+    margin: auto;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    padding: 0px 50px;
+}
+.close_choice_folder {
+    position: absolute;
+    right: 8px;
+    top: 0px;
+    font-size: 22px;
+    font-style: normal;
+    cursor: pointer;
+}
+.choice_select{
+    width: 200px;
+    height: 30px;
+    border: 0px;
+    border-radius: 5px;
+}
+.choice_title{
+    margin-top: 34px;
+}

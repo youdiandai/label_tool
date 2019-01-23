@@ -147,6 +147,17 @@
         <button class="buttom_btn close_btn">取消</button>
     </div>
 </div>
+<!-- 选择文件夹弹窗 -->
+<div class="choice_folder" style="display:block;">
+    <div class="choice_folder_main">
+        <em class="close_choice_folder">×</em>
+        <p class="choice_title">请选择要打开的文件夹：</p>
+        <select class="choice_select">
+            <option>文件夹1</option>
+            <option>文件夹2</option>
+        </select>
+    </div>
+</div>
 <script src="{{ url_for('static',filename='js/projectData.js') }}"></script>
 <script>
     // 高度与点击切换
@@ -165,6 +176,9 @@
     });
     $(".close_btn").click(function () {
         $(".del_warp").css("display", "none");
+    });
+    $(".close_choice_folder").click(function(){
+        $(".choice_folder").css("display","none");
     });
 </script>
 </body>
