@@ -13,7 +13,7 @@ import re
 from flask_login import current_user, login_required
 import os
 import json
-from ..tools import save_xml, zipDir, ImageUpload, mycopyfile
+from ..tools import ImageUpload, mycopyfile
 import hashlib
 import datetime
 
@@ -199,10 +199,8 @@ def end_add(p_id):
 @main.route('/create_project_del', methods=["POST"])
 def create_project_del():
     json = request.get_json()
-    print(json)
     imp = ImageUpload(current_user.id)
     name = request.get_json()['name']
-    print(name)
     imp.delete_file(name)
     return jsonify('success')
 

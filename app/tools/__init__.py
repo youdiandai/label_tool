@@ -11,6 +11,7 @@ import shutil
 import random
 import zipfile
 from redis import Redis
+from ..log import logger
 from flask import current_app
 import hashlib
 from datetime import datetime
@@ -99,7 +100,6 @@ class ImageUpload:
         :return:
         """
         result = remove_folder(os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(self.user_id)))
-        print(result)
         self.conn.hdel("label_tool", str(self.user_id))
 
     def get_files(self):
@@ -112,7 +112,7 @@ class ImageUpload:
 
 def remove_folder(path):
     if not os.path.exists(path):
-        print('目录%s不存在，不需要删除' % path)
+        logger.info('目录%s不存在，不需要删除' % path)
         return True
     else:
         try:
@@ -120,7 +120,7 @@ def remove_folder(path):
             for x in files:
                 os.remove(os.path.join(path, x))
             os.removedirs(path)
-            print('目录%s已经删除' % path)
+            logger.info('目录%s已经删除' % path)
             return True
         except Exception:
             return False
@@ -176,13 +176,13 @@ def mycopyfile(srcfile, dstfile):
     :return:
     """
     if not os.path.isfile(srcfile):
-        print("%s not exist!" % (srcfile))
+        logger.info("%s not exist!" % (srcfile))
     else:
         fpath, fname = os.path.split(dstfile)  # 分离文件名和路径
         if not os.path.exists(fpath):
             os.makedirs(fpath)  # 创建路径
         shutil.copyfile(srcfile, dstfile)  # 复制文件
-        print("copy %s -> %s" % (srcfile, dstfile))
+        logger.info("copy %s -> %s" % (srcfile, dstfile))
 
 
 def split_data(full_list: list, train: int, test: int):
