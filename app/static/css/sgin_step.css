@@ -173,6 +173,8 @@
 }
 .next_btn{
     height: 35px;
+    line-height: 35px;
+    text-align: center;
     width: 100px;
     border-radius: 6px;
     background: #0380dd;
@@ -180,6 +182,9 @@
     display: block;
     margin:0 auto 40px;
     cursor: pointer;
+}
+.next_btn:hover{
+    color: #fff;
 }
 .unavailable{
     background: #4fa6e7;

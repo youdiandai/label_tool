@@ -68,19 +68,16 @@
                     <h4 class="white">项目名称：{{ pro.name }}</h4>
                     <p class="white">项目类型: {{ pro.project_type.name }}</p>
                     <p class="white">创建时间：{{ _str(pro.create_time)[:7] }}</p>
-                    <a class="remove" href="javascript:;" onClick="event.cancelBubble = true"><span
-                            class="glyphicon glyphicon-remove"></span></a>
+                    <a class="remove" href="javascript:;" onClick="event.cancelBubble = true"><span class="glyphicon glyphicon-remove"></span></a>
                     <span class="hidden_span">{{ url_for("main.delete_project",project_id=pro.id) }}</span>
                 </div>
             </div>
         {% endfor %}
-
         <div class="col-md-2">
-            <div class="project" style="text-align:center;" data-toggle="modal" data-target="#myModal">
-                <a href="{{ url_for("main.create_project1") }}" class="add"><span
-                        class="glyphicon glyphicon-plus-sign"></span></a>
+            <a href="{{ url_for("main.create_project1") }}" class="project" style="text-align:center; display: block;">
+                <div class="add"><span class="glyphicon glyphicon-plus-sign"></span></div>
                 <p class="white">新建标注项目</p>
-            </div>
+            </a>
         </div>
     </div>
     <div class="am-fr">
@@ -89,7 +86,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -139,9 +136,9 @@
                     创建项目
                 </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
-</div>
+        </div>
+    </div>
+</div> -->
 <div class="del_warp">
     <div class="del_pop">
         <em class="close_pop close_btn">×</em>
@@ -154,6 +151,7 @@
 <script>
     // 高度与点击切换
     var clientheight = document.documentElement.clientHeight;
+    $(".body_container").get(0).style.height = clientheight - 52 + "px";
     {% for pro in projects %}
         $(".body_container").get(0).style.height = clientheight - 52 + "px";
         $("#floder{{ pro.id }}").on("click", function () {
