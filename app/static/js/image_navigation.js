@@ -21,16 +21,7 @@ function createImgNavi() {
         divCreateImg(image_divs[i]);
     }
     image_divs[0].children[0].style.border = 'red 4px solid';
-    $.ajax({
-        url: '/project/mark_count/' + p_id,
-        type: 'get',
-        dataType: 'json',
-        success: function (data) {
-            refreshImgStatus(data.images);
-        },
-        error: function (xhr) {
-        }
-    });
+    refreshImgStatus(get_img_status(marked_and_types));
 }
 
 function divCreateImg(div) {
