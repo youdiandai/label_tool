@@ -50,6 +50,7 @@ function get_img_status(marked_and_types) {
         let t = Object();
         t.marked = marked_and_types[y][0];
         t.type = marked_and_types[y][1];
+        t.name = marked_and_types[y][2];
         status.push(t)
     }
     return status;
