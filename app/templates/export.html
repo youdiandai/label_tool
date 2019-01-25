@@ -106,7 +106,7 @@
                 <div class="data_line_right"><input type="text" id="test_input" oninput="value=value.replace(/[^\d]/g,'')" placeholder="请输入数字"></div>
             </div>
             <p class="export_tips">两个比例和必须&gt;=100</p>
-            <button onclick="export_data_new()" class="buttom_btn active">确定</button>
+            <button id="export_submit" class="buttom_btn active">确定</button>
             <button class="buttom_btn close_export">取消</button>
         </div>
     </div>
@@ -126,19 +126,20 @@
         $(".close_export").click(function(){
             $(".export_data").css("display","none");
         });
-        function export_data_new () {
+        $("#export_submit").click(function(){
             var train = $("#train_input").val();
             train = parseInt(train);
             var test = $("#test_input").val();
             test = parseInt(test);
-            console.log(train+test)
+            console.log(train+test);
             if(train+test > 100){
                 alert("请输入正确数字！")
             }else{
                 var url = "/export_by_url/{{ project_id }}/" + train + "/" + test
                 window.location.href = url;
             }
-        }
+        });
+        
     })
 </script>
 </body>
