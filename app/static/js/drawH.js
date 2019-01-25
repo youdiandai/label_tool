@@ -70,8 +70,6 @@ function imageLoad(index) {
         img_Paddingleft = (canvas_width - img_width * scale) / 2;
         context.clearRect(0, 0, canvas_width, canvas_height);
         context.drawImage(imgLoad, img_Paddingleft, img_PaddingTop, img_width * scale, img_height * scale);
-        // slider_horizontal.value=img_Paddingleft;
-        // slider_vertical.value=img_PaddingTop;
         $("#vertical01").slider("setValue", -img_PaddingTop);
         $("#horizontal01").slider("setValue", -img_Paddingleft);
         console.log("scale:" + scale);
@@ -82,27 +80,6 @@ $("#previous").on("click", function () {
     if (current_index > 0) {
         current_index -= 1;
         imageLoad(current_index);
-        //更新进度条
-        // $.ajax({
-        //     url: '/project/mark_count/' + p_id,
-        //     type: 'get',
-        //     dataType: 'json',
-        //     success: function (data) {
-        //         refreshImgStatus(data.images);
-        //         var _track = document.getElementById("scroll_Track");
-        //         var _barText = document.getElementById('scrollBarTxt');
-        //         _track.style.width = ((data.marked / data._count) * 100) + '%';
-        //         _barText.textContent = data.marked + '/' + data._count;
-        //         $("#scrollBarTxt").html(data.marked + "/" + data._count);
-        //         if (data.images[current_index].marked) {
-        //             $(".tagg_results").html("分类信息:" + data.images[current_index].type);
-        //         }
-        //     },
-        //     error: function (xhr) {
-        //         //console.error('出错了');
-        //     }
-        // });
-
     } else {
         alert("已经是第一张了！");
     }
@@ -113,38 +90,14 @@ $("#next").on("click", function () {
     if (current_index < img_files.length - 1) {
         current_index += 1;
         imageLoad(current_index);
-        // 更新进度条
-        // $.ajax({
-        //     url: '/project/mark_count/' + p_id,
-        //     type: 'get',
-        //     dataType: 'json',
-        //     success: function (data) {
-        //         refreshImgStatus(data.images);
-        //         var _track = document.getElementById("scroll_Track");
-        //         var _barText = document.getElementById('scrollBarTxt');
-        //         _track.style.width = ((data.marked / data._count) * 100) + '%';
-        //         _barText.textContent = data.marked + '/' + data._count;
-        //         $("#scrollBarTxt").html(data.marked + "/" + data._count);
-        //         if (data.images[current_index].marked) {
-        //             $(".tagg_results").html("分类信息:" + data.images[current_index].type);
-        //         }
-        //     },
-        //     error: function (xhr) {
-        //         //console.error('出错了');
-        //     }
-        // });
     } else {
         alert("已经是最后一张了！");
     }
 });
 //放大
 $("#enlargement").on("click", function () {
-    var widthpre = imgLoad.width * scale;
-    var widthnext, shrinkscale;
     if (scale <= 3) {
         scale += 0.1;
-        widthnext = imgLoad.width * scale;
-        shrinkscale = widthnext / widthpre;
         var canvas = document.getElementById("canvas");
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -161,12 +114,8 @@ $("#enlargement").on("click", function () {
 });
 //缩小
 $("#shrink").on("click", function () {
-    var widthpre = imgLoad.width * scale;
-    var widthnext, shrinkscale;
     if (scale >= 0.2) {
         scale -= 0.1;
-        widthnext = imgLoad.width * scale;
-        shrinkscale = widthnext / widthpre;
         var canvas = document.getElementById("canvas");
         var context = canvas.getContext("2d");
         context.clearRect(0, 0, canvas.width, canvas.height);

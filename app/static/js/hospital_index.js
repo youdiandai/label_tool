@@ -82,7 +82,6 @@ $("#H_signclass").on("click", function () {
                         current_index += 1;
                     }
                     imageLoad(current_index);
-                    // if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
                     if (marked_and_types[current_index][0]) {
                         document.getElementById("H_signclass").style.display = "none";
                         document.getElementById("type_select").style.display = "none";
@@ -101,5 +100,4 @@ $("#H_signclass").on("click", function () {
             }
         });
     }
-
-})
+});
