@@ -5,6 +5,84 @@
     <title>导出</title>
     <script src="{{ url_for("static",filename="js/jquery.1.11.1.js") }}"></script>
     <style>
+        .export_data{
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            z-index: 4;
+            text-align: center;
+        }
+        .export_data_main{
+            width: 320px;
+            height: 190px;
+            background: #3e3e40;
+            border: 2px solid gray;
+            margin: auto;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            padding: 0px 50px;
+        }
+        .close_export_data {
+            position: absolute;
+            right: 8px;
+            top: 0px;
+            font-size: 22px;
+            font-style: normal;
+            cursor: pointer;
+        }
+        .export_data_line{
+            height: 40px;
+            line-height: 40px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .data_line_left{
+            float: left;
+        }
+        .data_line_right{
+            float: left;
+        }
+        .data_line_right input{
+            height: 30px;
+            padding-left: 5px;
+            border-radius: 5px;
+            border:0px;
+        }
+        .export_tips{
+            line-height:20px;
+            margin:0px;
+            font-size: 12px;
+            text-align: center;
+            color: #ccc;
+            margin: 5px 0px;
+        }
+        .buttom_btn.active {
+            margin-left: 0px;
+            margin-right: 15px;
+            background: #337ab7 !important;
+            text-align: center;
+            text-decoration: none;
+        }
+        .export_data .buttom_btn {
+            display: inline-block;
+            width: 80px;
+            height: 35px;
+            line-height: 35px;
+            color: #fff;
+            border: 0px;
+            background: #a9a9ac;
+            border-radius: 4px;
+            margin-left: 15px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
