@@ -112,16 +112,16 @@
     </div>
 </div>
 <script>
-    export_data = function () {
-        var train = document.getElementById('train');
-        train = train.getElementsByTagName('input')[0].value;
-        train = parseInt(train);
-        var test = document.getElementById('test');
-        test = test.getElementsByTagName("input")[0].value;
-        test = parseInt(test);
-        var url = "/export_by_url/{{ project_id }}/" + train + "/" + test
-        window.location.href = url;
-    }
+    // export_data = function () {
+    //     var train = document.getElementById('train');
+    //     train = train.getElementsByTagName('input')[0].value;
+    //     train = parseInt(train);
+    //     var test = document.getElementById('test');
+    //     test = test.getElementsByTagName("input")[0].value;
+    //     test = parseInt(test);
+    //     var url = "/export_by_url/{{ project_id }}/" + train + "/" + test
+    //     window.location.href = url;
+    // }
     $(function(){
         $(".close_export").click(function(){
             $(".export_data").css("display","none");
