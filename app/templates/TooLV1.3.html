@@ -147,13 +147,15 @@
             <canvas id="canvas_line" style="position:absolute;z-index:1;"></canvas>
         </div>
         <div class="thumb_model clear" style="position:relative;">
-            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewPrev()" src="{{ url_for('static',filename='image/prev.png') }}">
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewPrev()"
+                                                                  src="{{ url_for('static',filename='image/prev.png') }}">
             </div>
             <div class="bottom_left" style="float:left; width:60%; height:150px;">
                 <div id="little_images">
                 </div>
             </div>
-            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewNext()" src="{{ url_for('static',filename='image/next.png') }}">
+            <div style="float: left;width:5%;height: 150px;"><img width="100%" height="100%" onclick="viewNext()"
+                                                                  src="{{ url_for('static',filename='image/next.png') }}">
             </div>
             <div class="bottom_right" style="float:right; width:30%; min-width:200px;">
                 <select id="type_select"
@@ -191,7 +193,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                            <a href="{{ url_for("main.export",project_id=project_id) }}" target="_blank" class="btn btn-primary" id="export_sql">导出数据</a>
+                            <a href="{{ url_for("main.export",project_id=project_id) }}" target="_blank"
+                               class="btn btn-primary" id="export_sql">导出数据</a>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -247,7 +250,9 @@
         </div>
         <div class="img_Tool">
             <div class="tool_div">
-                <a href='{{ url_for("main.add_photos",p_id=project_id) }}' class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" style="text-decoration:none;" aria-expanded="false">
+                <a href='{{ url_for("main.add_photos",p_id=project_id) }}'
+                   class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" style="text-decoration:none;"
+                   aria-expanded="false">
                     <i class="left_add_img"></i>
                     <span class="toolbar-text" style="width:42px; margin-left:-9px;">添加图片</span>
                 </a>
@@ -258,12 +263,13 @@
         <div id="sign_history">
             <p style="color:white;">分类信息</p>
         </div>
-
-        {% for x in photos %}
-            <div id="decete_info_{{ x.id }}" style="display:none;">
-                <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
-            </div>
-        {% endfor %}
+        <div id="marked_types">
+            {% for x in photos %}
+                <div id="decete_info_{{ x.id }}" style="display:none;">
+                    <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
         <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p>
     </div>
 
@@ -274,6 +280,9 @@
     var _marked = 0;
     var _image_count;
     var p_id;
+    var marked_and_types = [{% for x in photos %}[
+        {% if x.marked %}true{% else %}false{% endif %},'{{ x.mark_type.name }}'
+        ],{% endfor %}];
     $(document).ready(function () {
             img_status = new Map([{% for x in photos %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
             for (var value of img_status.keys()) {
@@ -301,7 +310,7 @@
         $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
         $("#scrollBarTxt").html(_marked + "/" + _image_count);
         //图像数组
-        img_files = [{% for x in photos %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}]
+        img_files = [{% for x in photos %} "{{url_for('.img',photo_id=x.id)}}",{% endfor %}];
         //3个工具参数
         inclientHeight(3);
         //加载第一张

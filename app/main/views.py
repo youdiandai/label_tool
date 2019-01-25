@@ -17,10 +17,10 @@ from ..tools import ImageUpload, mycopyfile
 import hashlib
 import datetime
 
-check_re = '20[0-9]{12,}'
-patient_id_re = '[0-9]{5,6}-[0-9]'
-allow_ext_lower = ['jpg', 'jpeg', 'png', 'bmp', 'dcm', 'ima']
-allow_ext = allow_ext_lower + [x.upper() for x in allow_ext_lower]
+CHECK_RE = '20[0-9]{12,}'
+PATIENT_ID_RE = '[0-9]{5,6}-[0-9]'
+ALLOW_EXT_LOWER = ['jpg', 'jpeg', 'png', 'bmp', 'dcm', 'ima']
+ALLOW_EXT = ALLOW_EXT_LOWER + [x.upper() for x in ALLOW_EXT_LOWER]
 
 
 ########################################################
@@ -147,7 +147,7 @@ def create_project3(create_token):
             folder = Folders(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"), pro.id, current_user.id)
             for x in file_names:
                 ext = x[0].split('.')[1]
-                if ext in allow_ext:
+                if ext in ALLOW_EXT:
                     try:
                         p_path = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(current_user.id),
                                               x[1])
@@ -183,7 +183,7 @@ def end_add(p_id):
     folder = Folders(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"), p_id, current_user.id)
     for x in file_names:
         ext = x[0].split('.')[1]
-        if ext in allow_ext:
+        if ext in ALLOW_EXT:
             try:
                 p_path = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(current_user.id),
                                       x[1])
@@ -198,7 +198,6 @@ def end_add(p_id):
 
 @main.route('/create_project_del', methods=["POST"])
 def create_project_del():
-    json = request.get_json()
     imp = ImageUpload(current_user.id)
     name = request.get_json()['name']
     imp.delete_file(name)
@@ -262,20 +261,9 @@ def ptool(project_id):
         return render_template("Too_position.html", project=project, label_types=label_types)
 
 
-@main.route('/create_folder', methods=['POST'])
-@login_required
-def create_folder():
-    json = request.get_json()
-    folder_name = json['folder_name']
-    folder_descript = json['folder_descript']
-    project_id = json['project_id']
-    Folders(folder_name, folder_descript, int(project_id), current_user.id)
-    return jsonify({'status': 'succ'})
-
-
 @main.route('/upload/<int:pro_id>', methods=['POST'])
 @login_required
-def upload(pro_id):
+def upload(pro_id: int):
     """
     上传文件夹并保存图片
     :param pro_id:
@@ -286,13 +274,12 @@ def upload(pro_id):
         abort(403)
     tmp = request.files.getlist('file')[0].filename
     folder_name = tmp.split('/')[0]
-    photo_name = tmp.split('/')[1]
     folder = Folders(folder_name, pro_id, current_user.id)
     img_num = {'num': 0, 'uploaded': 0}
     for x in request.files.getlist('file'):
         img_num['num'] = img_num['num'] + 1
         ext = x.filename.split('.')[1]
-        if ext in allow_ext:
+        if ext in ALLOW_EXT:
             Photos(x, folder.id)
             img_num['uploaded'] = img_num['uploaded'] + 1
     return jsonify(img_num)
@@ -300,7 +287,7 @@ def upload(pro_id):
 
 @main.route('/img/<int:photo_id>')
 @login_required
-def img(photo_id):
+def img(photo_id: int):
     """
     提供图片的路由
     :param photo_id:
@@ -312,7 +299,7 @@ def img(photo_id):
 
 @main.route('/mark/<int:photo_id>', methods=['POST'])
 @login_required
-def mark(photo_id):
+def mark(photo_id: int):
     """
     标记图片
     :param photo_id:
@@ -343,29 +330,6 @@ def label_count(p_id: int):
                                 'labels': x.labels_data} for x in project.photos.all()]})
 
 
-# @main.route('/download/export_txt/<int:folder_id>')
-# def export_txt(folder_id: int):
-#     folder = Folders.query.get_or_404(folder_id)
-#     comparison = [(x.name.split('/')[1], x.mark_type.name if x.marked else '未设置') for x in folder.photos.all()]
-#     with open(os.path.join(folder.url, 'export.txt'), "w") as f:
-#         for x in comparison:
-#             f.write(x[0] + " " + x[1] + '\n')
-#     return send_from_directory(folder.url, 'export.txt', as_attachment=True)
-
-
-# @main.route('/download/export_xml/<int:folder_id>')
-# def export_xml(folder_id: int):
-#     folder = Folders.query.get_or_404(folder_id)
-#     export_path = folder.create_export_path()
-#     for x in folder.photos.filter_by(labeled=True).all():
-#         photo_name = x.name.split('/')[1].split('.')[0] + '.' + 'xml'
-#         save_xml(x.get_xml('xml', photo_name), os.path.join(export_path, photo_name))
-#     if os.path.exists(os.path.join(folder.url, 'export_xml.zip')):
-#         os.remove(os.path.join(folder.url, 'export_xml.zip'))
-#     zipDir(export_path, os.path.join(folder.url, 'export_xml.zip'))
-#     return send_from_directory(folder.url, 'export_xml.zip', as_attachment=True)
-
-
 @main.route('/label/<int:photo_id>', methods=['POST'])
 @login_required
 def label(photo_id: int):
@@ -374,7 +338,6 @@ def label(photo_id: int):
     :param photo_id:
     :return:
     """
-    data = request.get_json()
     data = request.values.to_dict()
     photo = Photos.query.get_or_404(photo_id)
     labels_data = json.loads(data['labels'])
@@ -390,18 +353,6 @@ def label(photo_id: int):
     db.session.add(photo)
     db.session.commit()
     return jsonify({'status': 'successful'})
-
-
-@main.route('/export_p/<int:project_id>', methods=["GET", "POST"])
-@login_required
-def export_p(project_id: int):
-    data = request.get_json()
-    project = Projects.query.get_or_404(project_id)
-    train = int(data['train'])
-    test = int(data['test'])
-    val = 100 - (train + test)
-    zip_name = project.export_data(train, test, val)
-    return send_from_directory(project.url, zip_name, as_attachment=True)
 
 
 @main.route('/export/<int:project_id>')
@@ -430,8 +381,3 @@ def delete_folder(folder_id: int):
     folder = Folders.query.get_or_404(folder_id)
     folder.delete()
     return redirect(url_for('main.folders', project_id=folder.project_id))
-
-
-@main.route('/tool_position/')
-def tool_position():
-    return render_template('Too_position.html')

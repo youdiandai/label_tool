@@ -16,7 +16,7 @@ function imageLoad(index) {
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
 
-    if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
+    if (marked_and_types[current_index][0]) {
         document.getElementById("H_signclass").style.display = "none";
         document.getElementById("type_select").style.display = "none";
         document.getElementById("red_tips").style.display = "none";
@@ -31,12 +31,13 @@ function imageLoad(index) {
         document.getElementById("decete_info_" + img_files[i].split('/')[2]).style.display = "none";
     }
 
-    if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
+    if (marked_and_types[current_index][0]) {
         document.getElementById("decete_info_" + img_files[current_index].split('/')[2]).style.display = "";
     }
     else {
         document.getElementById("decete_info_" + img_files[current_index].split('/')[2]).style.display = "none";
     }
+
 
     scale = 1;
     img_PaddingTop = 0;
@@ -66,7 +67,7 @@ function imageLoad(index) {
             scale = 1;
         }
         img_PaddingTop = (canvas_height - img_height * scale) / 2;
-        img_Paddingleft = (canvas_width - img_width * scale) / 2
+        img_Paddingleft = (canvas_width - img_width * scale) / 2;
         context.clearRect(0, 0, canvas_width, canvas_height);
         context.drawImage(imgLoad, img_Paddingleft, img_PaddingTop, img_width * scale, img_height * scale);
         // slider_horizontal.value=img_Paddingleft;
@@ -82,30 +83,25 @@ $("#previous").on("click", function () {
         current_index -= 1;
         imageLoad(current_index);
         //更新进度条
-        $.ajax({
-            url: '/project/mark_count/' + p_id,
-            type: 'get',
-            dataType: 'json',
-            success: function (data) {
-                refreshImgStatus(data.images);
-                var _track = document.getElementById("scroll_Track");
-                // _thump = document.getElementById('scroll_Thumb');
-                var _barText = document.getElementById('scrollBarTxt');
-                _track.style.width = ((data.marked / data._count) * 100) + '%';
-                // _thump.style.marginLeft = ((data.marked / data._count) * 100) + '%';
-                _barText.textContent = data.marked + '/' + data._count;
-                $("#scrollBarTxt").html(data.marked + "/" + data._count);
-                // console.log(JSON.stringify(data));
-                // console.log(current_index);
-                // console.log(data.images[current_index])
-                if (data.images[current_index].marked) {
-                    $(".tagg_results").html("分类信息:" + data.images[current_index].type);
-                }
-            },
-            error: function (xhr) {
-                //console.error('出错了');
-            }
-        });
+        // $.ajax({
+        //     url: '/project/mark_count/' + p_id,
+        //     type: 'get',
+        //     dataType: 'json',
+        //     success: function (data) {
+        //         refreshImgStatus(data.images);
+        //         var _track = document.getElementById("scroll_Track");
+        //         var _barText = document.getElementById('scrollBarTxt');
+        //         _track.style.width = ((data.marked / data._count) * 100) + '%';
+        //         _barText.textContent = data.marked + '/' + data._count;
+        //         $("#scrollBarTxt").html(data.marked + "/" + data._count);
+        //         if (data.images[current_index].marked) {
+        //             $(".tagg_results").html("分类信息:" + data.images[current_index].type);
+        //         }
+        //     },
+        //     error: function (xhr) {
+        //         //console.error('出错了');
+        //     }
+        // });
 
     } else {
         alert("已经是第一张了！");
@@ -118,30 +114,25 @@ $("#next").on("click", function () {
         current_index += 1;
         imageLoad(current_index);
         // 更新进度条
-        $.ajax({
-            url: '/project/mark_count/' + p_id,
-            type: 'get',
-            dataType: 'json',
-            success: function (data) {
-                refreshImgStatus(data.images);
-                _track = document.getElementById("scroll_Track");
-                // _thump = document.getElementById('scroll_Thumb');
-                _barText = document.getElementById('scrollBarTxt');
-                _track.style.width = ((data.marked / data._count) * 100) + '%';
-                // _thump.style.marginLeft = ((data.marked / data._count) * 100) + '%';
-                _barText.textContent = data.marked + '/' + data._count;
-                $("#scrollBarTxt").html(data.marked + "/" + data._count);
-                // console.log(current_index);
-                // console.log(JSON.stringify(data));
-                // console.log(data.images[current_index]);
-                if (data.images[current_index].marked) {
-                    $(".tagg_results").html("分类信息:" + data.images[current_index].type);
-                }
-            },
-            error: function (xhr) {
-                //console.error('出错了');
-            }
-        });
+        // $.ajax({
+        //     url: '/project/mark_count/' + p_id,
+        //     type: 'get',
+        //     dataType: 'json',
+        //     success: function (data) {
+        //         refreshImgStatus(data.images);
+        //         var _track = document.getElementById("scroll_Track");
+        //         var _barText = document.getElementById('scrollBarTxt');
+        //         _track.style.width = ((data.marked / data._count) * 100) + '%';
+        //         _barText.textContent = data.marked + '/' + data._count;
+        //         $("#scrollBarTxt").html(data.marked + "/" + data._count);
+        //         if (data.images[current_index].marked) {
+        //             $(".tagg_results").html("分类信息:" + data.images[current_index].type);
+        //         }
+        //     },
+        //     error: function (xhr) {
+        //         //console.error('出错了');
+        //     }
+        // });
     } else {
         alert("已经是最后一张了！");
     }

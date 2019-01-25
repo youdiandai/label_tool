@@ -8,7 +8,6 @@ __mtime__ = '2018/5/15'
 import hashlib
 import os
 from datetime import datetime
-from .log import logger
 
 from flask import current_app
 from flask_login import UserMixin
@@ -299,20 +298,15 @@ class Projects(db.Model):
         if not os.path.exists(current_app.config['UPLOADPATH']):
             try:
                 os.mkdir(current_app.config['UPLOADPATH'])
-                logger.info(('创建了文件根目录:%s' % (current_app.config['UPLOADPATH'])))
             except:
-                logger.info(('创建文件根目录失败'))
                 return None
         if not os.path.exists(project_url):
             try:
                 os.mkdir(project_url)
-                logger.info('创建了项目%s的根目录:%s' % (self.name, projectname_hash))
                 return project_url
             except:
-                logger.info('创建失败')
                 return None
         else:
-            logger.info('文件夹已存在')
             return project_url
 
     def remove_project_folder(self):
@@ -321,16 +315,13 @@ class Projects(db.Model):
         :return:True or false
         """
         if not os.path.exists(current_app.config['UPLOADPATH']):
-            logger.info('文件根目录不存在，不用删除')
             return True
         elif not os.path.exists(self.url):
-            logger.info('用户文件夹不存在，不用删除')
             return True
         else:
             try:
                 os.remove(self.url)
                 if not os.path.exists(self.url):
-                    logger.info('项目%s的用户文件夹%s已删除' % (self.name, self.url))
                     return True
             except:
                 return False
@@ -402,18 +393,14 @@ class Folders(db.Model):
         project_url = Projects.query.get_or_404(project_id).url
         folder_url = os.path.join(project_url, folder_hash)
         if not os.path.exists(current_app.config['UPLOADPATH']):
-            logger.info('文件根目录不存在，无法进行创建')
             return None
         if not os.path.exists(project_url):
-            logger.info('项目%s的根目录%s不存在，将会进行创建' % (project_id, project_url))
             os.mkdir(project_url)
         if os.path.exists(folder_url):
-            logger.info('文件夹%s目录%s已存在，不需要创建' % (self.name, folder_url))
             return folder_url
         else:
             try:
                 os.mkdir(folder_url)
-                logger.info('文件夹%s的目录%s已经创建' % (self.name, folder_url))
                 return folder_url
             except:
                 return None
@@ -421,12 +408,10 @@ class Folders(db.Model):
     def remove_record_folder(self):
         folder_path = self.url
         if not os.path.exists(folder_path):
-            logger.info('文件夹%s目录%s不存在，不需要删除' % (self.name, folder_path))
             return True
         else:
             try:
                 os.removedirs(folder_path)
-                logger.info('文件夹%s目录%s已经删除' % (self.name, folder_path))
                 return True
             except:
                 return False
@@ -461,7 +446,6 @@ class Folders(db.Model):
         self.url = self.create_folder_folder(self.project_id)
         db.session.add(self)
         db.session.commit()
-        logger.info("create folder {}".format(self.name))
 
 
 class MarkTypes(db.Model):
@@ -481,7 +465,6 @@ class MarkTypes(db.Model):
         self.name = name
         db.session.add(self)
         db.session.commit()
-        logger.info("create mark type {}".format(self.name))
 
 
 class Photos(db.Model):
@@ -633,7 +616,6 @@ class LabelTypes(db.Model):
         self.name = name
         db.session.add(self)
         db.session.commit()
-        logger.info("create label type {}".format(self.name))
 
 
 class Points(db.Model):

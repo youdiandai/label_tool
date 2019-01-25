@@ -53,6 +53,17 @@ function divCreateImg(div) {
     }
 };
 
+function get_img_status(marked_and_types) {
+    var status = [];
+    for (var y = 0; y < marked_and_types.length; y++) {
+        var t = Object();
+        t.marked = marked_and_types[y][0];
+        t.type = marked_and_types[y][1];
+        status.push(t)
+    }
+    return status;
+}
+
 function addImgStatus(div, index, status) {
     //给div添加图片状态
     if (status[index].marked) {
