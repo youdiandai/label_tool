@@ -281,7 +281,7 @@
     var _image_count;
     var p_id;
     var marked_and_types = [{% for x in photos %}[
-        {% if x.marked %}true{% else %}false{% endif %},'{{ x.mark_type.name }}'
+        {% if x.marked %}true{% else %}false{% endif %},'{{ x.mark_type.name }}','{{ x.name }}'
         ],{% endfor %}];
     $(document).ready(function () {
             img_status = new Map([{% for x in photos %}['{{ x.id }}','{{ x.marked }}'],{% endfor %}]);
@@ -370,27 +370,19 @@
         $('#export_sql').text("导出数据");
         //查看标记列表
         $("#history_dic").click(function () {
-            var row_data;
-            $.ajax({
-                type: 'GET',
-                url: '/project/mark_count/' + p_id,
-                contentType: 'application/json; charset=UTF-8',
-                dataType: 'json',
-                async: false,
-                beforeSend: function () {
-                },
-                success: function (data) {
-                    $("#history_model").empty();
-                    for (var i = 0; i < data._count; i++) {
-                        row_data = '<tr>\
-                            <td>' + data.images[i].name + '</td>\
-                            <td id="history_model_sign">' + data.images[i].type + '</td>\
-                        </tr>';
-                        $('#history_model').append(row_data);
-                    }
-                    //$("#export_sql").attr("href", data.txt_url)
-                }
-            });
+            $("#history_model").empty();
+            var mdata = get_img_status(marked_and_types);
+            for (var i = 0; i < _image_count; i++) {
+                let _tr = document.createElement("tr");
+                let name = document.createElement('td');
+                let _type = document.createElement('td');
+                name.textContent = mdata[i].name;
+                _type.id = "history_model_sign";
+                _type.textContent = mdata[i].type;
+                _tr.appendChild(name);
+                _tr.appendChild(_type);
+                $('#history_model').append(_tr);
+            }
         });
         //生成图像导航栏并跳转到第一页
         createImgNavi();
