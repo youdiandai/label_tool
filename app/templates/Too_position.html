@@ -194,7 +194,9 @@
         </div>
         <div class="img_Tool">
             <div class="tool_div">
-                <a href='{{ url_for("main.add_photos",p_id=project.id) }}' class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" style="text-decoration:none;" aria-expanded="false">
+                <a href='{{ url_for("main.add_photos",p_id=project.id) }}'
+                   class="abun btn btn-link dropdown-toggle  btn-lg buttonfirstb" style="text-decoration:none;"
+                   aria-expanded="false">
                     <i class="left_add_img"></i>
                     <span class="toolbar-text" style="width:42px; margin-left:-9px;">添加图片</span>
                 </a>
@@ -275,9 +277,11 @@
     var _marked;
     var _image_count;
     var p_id;
+    var labeled_count;
     $(document).ready(function () {
         _marked = {{ project.photos.filter_by(labeled=True).count() }};
         _image_count = {{ project.photos.count() }};
+        labeled_count = JSON.stringify({{ labeled_count|tojson|safe }});
         p_id = {{ project.id }}
             $("#scroll_Track").css("width", ((_marked / _image_count) * 100) + "%");
         $("#scrollBarTxt").html(_marked + "/" + _image_count);

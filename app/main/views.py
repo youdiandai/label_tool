@@ -258,7 +258,10 @@ def ptool(project_id):
                                photos=project.photos.all())
     elif project.project_type.name == '位置标注':
         label_types = project.label_types.all()
-        return render_template("Too_position.html", project=project, label_types=label_types)
+        labeled_count = [{'name': x.name, 'labeled': x.labeled,
+                          'labels': x.labels_data} for x in project.photos.all()]
+        return render_template("Too_position.html", project=project, label_types=label_types,
+                               labeled_count=labeled_count)
 
 
 @main.route('/upload/<int:pro_id>', methods=['POST'])
