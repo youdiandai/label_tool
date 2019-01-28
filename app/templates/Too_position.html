@@ -215,17 +215,19 @@
                 {[item.classify]}
             </li>
         </ol>
+        <div class="right_select" style="width:100%;">
+            <!-- 根据分类数组动态显示下拉列表 -->
+            <select id="classify" placeholder="手动输入或下拉选择分类" style="display:none;">
+                {% for x in record_types %}
+                    <option value='{{ x.id }}'>{{ x.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
     </div>
     <div class="tool_tip">
         <p class="input_Txt">设置标注名称：</p>
         <input type="text" id="sign_name" placeholder="填写标注名称(*不可重复)">
         <p class="input_Txt">设置标注分类：</p>
-        <!-- 根据分类数组动态显示下拉列表 -->
-        <select id="classify" placeholder="手动输入或下拉选择分类">
-            {% for x in label_types %}
-                <option value='{{ x.id }}'>{{ x.name }}</option>
-            {% endfor %}
-        </select>
         <button type="button" id="success" class="btn btn-success">确定</button>
         <button type="button" id="remove_rect" class="btn btn-default">取消</button>
     </div>
