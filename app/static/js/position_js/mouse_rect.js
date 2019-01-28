@@ -6,6 +6,8 @@ function rectcircle(x,y,width,height){
   this.height = height;
   this.isSelected= false;
 }
+// 自定义颜色数组，后续可添加，改变涉及颜色的数组length
+var colorarr = ["#920601", "#dde641", "#0380dd", "#3cdf2e", "#dc49ed"];
 // 保存画布上所有的圆圈
 var rects=[];
 var canvas_rect;
@@ -243,7 +245,7 @@ function stopDragging() {
     }
 
 
-    
+
   isDraw = false;
   isDragging = false;
   bol_edit_BOTTOM=false;
