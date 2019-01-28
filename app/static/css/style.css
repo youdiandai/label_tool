@@ -298,3 +298,8 @@ border-radius: 20px;
 .right_select option{
     line-height: 30px;
 }
+.right_type_title{
+    font-size:18px; 
+    margin: 0px auto 10px; 
+    width: 170px;
+}

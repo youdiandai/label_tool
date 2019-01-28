@@ -29,14 +29,14 @@ function imageLoad(index) {
 
     if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
         document.getElementById("H_signclass").style.display = "none";
-        document.getElementById("radio").style.display = "none";
+        // document.getElementById("radio").style.display = "none";
         document.getElementById("type_select").style.display = "none";
         document.getElementById("hidden_div").style.display = "none";
     }
     else {
         document.getElementById("H_signclass").style.display = "";
         document.getElementById("type_select").style.display = "block";
-        document.getElementById("radio").style.display = "";
+        // document.getElementById("radio").style.display = "";
         document.getElementById("hidden_div").style.display = "block";
     }
 
