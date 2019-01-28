@@ -106,9 +106,6 @@ $("#previous").on("click", function () {
                 $("#scrollBarTxt").html(data.marked + "/" + data._count);
                 if (data.images[current_index].marked) {
                     $(".tagg_results span").html(data.images[current_index].type);
-                    $(".lesion_location span").html(data.images[current_index].detect_type);
-                    $(".specific_location span").html(data.images[current_index].gastroscopy_record_type);
-                    $(".image_type span").html(data.images[current_index].gastroscopy_photo_type);
                 }
             },
             error: function (xhr) {
@@ -137,9 +134,6 @@ $("#next").on("click", function () {
                 $("#scrollBarTxt").html(data.marked + "/" + data._count);
                 if (data.images[current_index].marked) {
                     $(".tagg_results span").html(data.images[current_index].type);
-                    $(".lesion_location span").html(data.images[current_index].detect_type);
-                    $(".specific_location span").html(data.images[current_index].gastroscopy_record_type);
-                    $(".image_type span").html(data.images[current_index].gastroscopy_photo_type);
                 }
             },
             error: function (xhr) {

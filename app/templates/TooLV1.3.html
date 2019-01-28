@@ -273,9 +273,6 @@
         {% for x in record.photos.all() %}
             <div id="decete_info_{{ x.id }}" style="display:none;">
                 <p style="font-size:18px;color:#ffffff" class="tagg_results">分类：<span style="color:#c94e50;">{{ x.record_type.name }}</span></p>
-                <p style="font-size:18px;color:#ffffff" class="lesion_location">病变部位：<span style="color:#c94e50;">{{ x.detect_type.name }}</span></p>
-                <p style="font-size:18px;color:#ffffff" class="specific_location">胃病变具体部位：<span style="color:#c94e50;">{{ x.gastroscopy_record_type.name }}</span></p>
-                <p style="font-size:18px;color:#ffffff" class="image_type">图像类型：<span style="color:#c94e50;">{{ x.gastroscopy_photo_type.name }}</span></p>
             </div>
         {% endfor %}
         <!-- <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p> -->
@@ -286,28 +283,6 @@
                 {% for x in record_types %}
                     <option value='{{ x.id }}'>{{ x.name }}</option>
                 {% endfor %}
-            </select>
-            <P class="right_type_title">病变部位：</P>
-            <select class="right_select" id="lesion_location">
-                <option value="食管" selected>食管</option>
-                <option value="胃">胃</option>
-            </select>
-            <P class="right_type_title">胃病变具体部位：</P>
-            <select class="right_select" id="specific_location">
-                <option value="贲门/胃底" selected>贲门/胃底</option>
-                <option value="胃体">胃体</option>
-                <option value="角切迹">角切迹</option>
-                <option value="移行部">移行部</option>
-                <option value="胃窦">胃窦</option>
-            </select>
-            <P class="right_type_title">图像类型：</P>
-            <select class="right_select" id="image_type">
-                <option value="白光" selected>白光</option>
-                <option value="FICE">FICE</option>
-                <option value="蓝激光">蓝激光</option>
-                <option value="超声内镜">超声内镜</option>
-                <option value="共聚焦内镜">共聚焦内镜</option>
-                <option value="病理">病理</option>
             </select>
         </div>
     </div>
