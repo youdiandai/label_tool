@@ -285,3 +285,16 @@ border-radius: 20px;
     background-image: url("../image/add_icon_w.png");
     background-size: 100% 100%;
 }
+.right_select{
+    display: block; 
+    text-align: center; 
+    margin: 0px auto 10px; 
+    height: 34px; 
+    font-size:16px; 
+    color: #333; 
+    background: #fff; 
+    width:170px;
+}
+.right_select option{
+    line-height: 30px;
+}
