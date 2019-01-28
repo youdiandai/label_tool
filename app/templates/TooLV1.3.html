@@ -158,12 +158,6 @@
                                                                   src="{{ url_for('static',filename='image/next.png') }}">
             </div>
             <div class="bottom_right" style="float:right; width:30%; min-width:200px;">
-                <select id="type_select"
-                        style="display: block; text-align: center; margin: 0px auto 10px; height: 25px; color: #333; background: #fff; width:100px;">
-                    {% for x in mark_types %}
-                        <option value='{{ x.id }}'>{{ x.name }}</option>
-                    {% endfor %}
-                </select>
                 <div style="width:175px; overflow:hidden; margin:0 auto;">
                     <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal"
                             title="查看当前图像集已保存的标注记录"
