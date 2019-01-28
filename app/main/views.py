@@ -259,7 +259,7 @@ def ptool(project_id):
     elif project.project_type.name == '位置标注':
         label_types = project.label_types.all()
         labeled_count = [{'name': x.name, 'labeled': x.labeled,
-                          'labels': x.labels_data} for x in project]
+                          'labels': x.labels_data} for x in project.photos.all()]
         return render_template("Too_position.html", project=project, label_types=label_types,
                                labeled_count=labeled_count)
 
