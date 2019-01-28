@@ -158,12 +158,6 @@
                                                                   src="{{ url_for('static',filename='image/next.png') }}">
             </div>
             <div class="bottom_right" style="float:right; width:30%; min-width:200px;">
-                <select id="type_select"
-                        style="display: block; text-align: center; margin: 0px auto 10px; height: 25px; color: #333; background: #fff; width:100px;">
-                    {% for x in mark_types %}
-                        <option value='{{ x.id }}'>{{ x.name }}</option>
-                    {% endfor %}
-                </select>
                 <div style="width:175px; overflow:hidden; margin:0 auto;">
                     <button type="button" id="history_dic" data-toggle="modal" data-target="#myModal"
                             title="查看当前图像集已保存的标注记录"
@@ -271,7 +265,6 @@
                 </div>
             {% endfor %}
         </div>
-        <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p>
     </div>
 
 
@@ -352,22 +345,26 @@
 <script src="{{ url_for('static',filename='js/classie.js') }}"></script>
 <script src="{{ url_for('static',filename='js/dialogFx.js') }}"></script>
 <script>
-    (function () {
-        var dlgtrigger = document.querySelector('[data-dialog]'),
-            somedialog = document.getElementById(dlgtrigger.getAttribute('data-dialog')),
-            dlg = new DialogFx(somedialog);
-        dlgtrigger.addEventListener('click', dlg.toggle.bind(dlg));
+    // (function () {
+    //     var dlgtrigger = document.querySelector('[data-dialog]'),
+    //         somedialog = document.getElementById(dlgtrigger.getAttribute('data-dialog')),
+    //         dlg = new DialogFx(somedialog);
+    //     dlgtrigger.addEventListener('click', dlg.toggle.bind(dlg));
 
-    })();
+    // })();
 </script>
 <script>
     var mark_url = "";
     $(document).ready(function () {
-        mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
-        $("#type_titps").html($("#type_select option:selected").text());
-        $("#type_select").change(function () {
-            $("#type_titps").html($("#type_select option:selected").text());
-        });
+        var to_get_img = img_files[current_index].split('/');
+        var img_id = to_get_img[to_get_img.length - 1];
+        createImgNavi();
+        mark_url = "/mark/" + img_id;
+        // mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
+        // $("#type_titps").html($("#type_select option:selected").text());
+        // $("#type_select").change(function () {
+        //     $("#type_titps").html($("#type_select option:selected").text());
+        // });
         $('#export_sql').text("导出数据");
         //查看标记列表
         $("#history_dic").click(function () {
@@ -389,9 +386,16 @@
         createImgNavi();
         refreshImgNavi(0);
     });
+    // $(function () {
+    //     $('#change_img').click(function () {//ID为test的元素点击时
+    //         mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
+    //     });
+    // });
     $(function () {
         $('#change_img').click(function () {//ID为test的元素点击时
-            mark_url = "/mark/" + /\d+/.exec(img_files[current_index])[0];
+            var to_get_img = img_files[current_index].split('/');
+            var img_id = to_get_img[to_get_img.length - 1];
+            mark_url = "/mark/" + img_id;
         });
     });
 </script>

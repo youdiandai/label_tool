@@ -16,15 +16,28 @@ function imageLoad(index) {
     var canvas = document.getElementById("canvas");
     var context = canvas.getContext("2d");
 
-    if (marked_and_types[current_index][0]) {
+    // if (marked_and_types[current_index][0]) {
+    //     document.getElementById("H_signclass").style.display = "none";
+    //     document.getElementById("type_select").style.display = "none";
+    //     document.getElementById("red_tips").style.display = "none";
+    // }
+    // else {
+    //     document.getElementById("H_signclass").style.display = "";
+    //     document.getElementById("type_select").style.display = "block";
+    //     document.getElementById("red_tips").style.display = "block";
+    // }
+
+    if (img_status.get(img_files[current_index].split('/')[2]) == "True") {
         document.getElementById("H_signclass").style.display = "none";
+        // document.getElementById("radio").style.display = "none";
         document.getElementById("type_select").style.display = "none";
-        document.getElementById("red_tips").style.display = "none";
+        document.getElementById("hidden_div").style.display = "none";
     }
     else {
         document.getElementById("H_signclass").style.display = "";
         document.getElementById("type_select").style.display = "block";
-        document.getElementById("red_tips").style.display = "block";
+        // document.getElementById("radio").style.display = "";
+        document.getElementById("hidden_div").style.display = "block";
     }
 
     for (let i = 0; i < img_files.length; i++) {
@@ -80,6 +93,24 @@ $("#previous").on("click", function () {
     if (current_index > 0) {
         current_index -= 1;
         imageLoad(current_index);
+        //更新进度条
+        $.ajax({
+            url: '/record/mark_count/' + record_id,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                var _track = document.getElementById("scroll_Track");
+                var _barText = document.getElementById('scrollBarTxt');
+                _track.style.width = ((data.marked / data._count) * 100) + '%';
+                _barText.textContent = data.marked + '/' + data._count;
+                $("#scrollBarTxt").html(data.marked + "/" + data._count);
+                if (data.images[current_index].marked) {
+                    $(".tagg_results span").html(data.images[current_index].type);
+                }
+            },
+            error: function (xhr) {
+            }
+        });
     } else {
         alert("已经是第一张了！");
     }
@@ -90,6 +121,24 @@ $("#next").on("click", function () {
     if (current_index < img_files.length - 1) {
         current_index += 1;
         imageLoad(current_index);
+        //更新进度条
+        $.ajax({
+            url: '/record/mark_count/' + record_id,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                var _track = document.getElementById("scroll_Track");
+                var _barText = document.getElementById('scrollBarTxt');
+                _track.style.width = ((data.marked / data._count) * 100) + '%';
+                _barText.textContent = data.marked + '/' + data._count;
+                $("#scrollBarTxt").html(data.marked + "/" + data._count);
+                if (data.images[current_index].marked) {
+                    $(".tagg_results span").html(data.images[current_index].type);
+                }
+            },
+            error: function (xhr) {
+            }
+        });
     } else {
         alert("已经是最后一张了！");
     }
