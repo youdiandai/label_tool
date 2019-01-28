@@ -67,19 +67,16 @@ $("#deleteTool").on("click",function(){
      console.log(j);
        sign_context.items.splice(j, 1);
      //重绘
-     context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
-     for (var i = 0; i < rects.length; i++) {
-     // if (rects[i].isSelected) {
-     //   context.fillStyle="rgba(100,150,185,0.5)";/*设置填充颜色*/
-     //   context.fillRect(rects[i].x,rects[i].y,rects[i].width,rects[i].height);
-     // }
-     context.strokeRect(rects[i].x,rects[i].y,rects[i].width,rects[i].height);
-     context.fillStyle="#F00";/*设置填充颜色*/
-     context.fillRect(rects[i].x-5,rects[i].y-5,10,10);
-     context.fillRect(rects[i].x+rects[i].width-5,rects[i].y+rects[i].height-5,10,10);
+         context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
+         for (var i = 0; i < rects.length; i++) {
+             context.strokeRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+             var i_length = i % 5;
+             context.fillStyle = colorarr[i_length + 1];/*设置填充颜色*/
+             context.fillRect(rects[i].x - 5, rects[i].y - 5, 10, 10);
+             context.fillRect(rects[i].x + rects[i].width - 5, rects[i].y + rects[i].height - 5, 10, 10);
+         }
      }
-  }
-  previousSelectedCircle=null;
+     previousSelectedCircle = null;
 }
 else {
   console.log("circle");
