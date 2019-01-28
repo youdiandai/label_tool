@@ -266,7 +266,8 @@
         <div id="marked_types">
             {% for x in photos %}
                 <div id="decete_info_{{ x.id }}" style="display:none;">
-                    <p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>
+                    <p style="font-size:18px;color:#ffffff" class="tagg_results">分类：<span
+                            style="color:#c94e50;">{{ x.mark_type.name }}</span></p>
                 </div>
             {% endfor %}
         </div>
