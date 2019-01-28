@@ -47,23 +47,26 @@ $("#deleteTool").on("click",function(){
      rects.splice(index, 1);
     //  sign_Information.splice(index, 1);
      var j=-1;
-     for (var i = 0; i < sign_context.items.length; i++) {
-       var rectid=sign_context.items[i].id.substr(sign_context.items[i].id.length-6,6);
-       console.log(rectid)
-       if (rectid=="Rectes") {
-            // //更新vue数组
-            // sign_context.items.splice(index, 1);
-            var index_id=parseInt(sign_context.items[i].id);
-            console.log(123);
-            if (index_id==index) {
-                j=i;
+     //新版选择分类
+     for (var i = 0; i < $(".classify").length; i++) {
+        var select_id = $(".classify").eq(i).attr("id").substr($(".classify").eq(i).attr("id").length - 6, 6);
+        if (select_id == "Rectes") {
+            var index_id = parseInt($(".classify").eq(i).attr("id").slice(0, 1));
+            if (index_id == index) {
+                $(".classify").eq(i).remove();
             }
-            if (index_id>index) {
-              index_id-=1;
-              sign_context.items[i].id=index_id+"Rectes"
-            }
-       }
-     }
+        }
+    }
+    //重写右侧select ID
+    for (var i = 0; i < $(".classify").length; i++) {
+        $(".classify").eq(i).attr("id", i + "Rectes");
+        var color_index =i%5;
+        if(color_index == 4){
+            color_index = -1;
+        }
+        console.log(color_index);
+        $(".classify").eq(i).css("border","solid 3px " + colorarr[color_index+1])
+    }
      console.log(j);
        sign_context.items.splice(j, 1);
      //重绘
@@ -118,10 +121,15 @@ function drawCircles(rect,rects) {
   // 清除画布，准备绘制
   context.clearRect(0, 0, canvas_rect.width, canvas_rect.height);
     var rect = rect;
+    var rects = rects;
+    var rects_length = rects.length % 5;
+    if (rects_length + 1 == 5) {
+        rects_length = -1;
+    }
     // 绘制圆圈
-    context.strokeStyle="#FF0000";
+    context.strokeStyle = "#000";
     context.strokeRect(rect.x,rect.y,rect.width,rect.height);
-    context.fillStyle="#F00";/*设置填充颜色*/
+    context.fillStyle = colorarr[rects_length + 1];/*设置填充颜色*/
     context.fillRect(rect.x-5,rect.y-5,10,10);
     context.fillRect(rect.x+rect.width-5,rect.y+rect.height-5,10,10);
     for (var i = 0; i < rects.length; i++) {
@@ -133,8 +141,13 @@ function drawCircles(rect,rects) {
 
     context.strokeRect(rects[i].x,rects[i].y,rects[i].width,rects[i].height);
     context.fillStyle="#F00";/*设置填充颜色*/
-    context.fillRect(rects[i].x-5,rects[i].y-5,10,10);
-    context.fillRect(rects[i].x+rects[i].width-5,rects[i].y+rects[i].height-5,10,10);
+    var i_length = i % 5;
+    if (i_length == 4) {
+        i_length = -1;
+    }
+    context.fillStyle = colorarr[i_length + 1];/*设置填充颜色*/
+    context.fillRect(rects[i].x - 5, rects[i].y - 5, 10, 10);
+    context.fillRect(rects[i].x + rects[i].width - 5, rects[i].y + rects[i].height - 5, 10, 10);
     }
     context.lineWidth = 1;
 }
@@ -148,7 +161,12 @@ function refush(rects) {
       context.fillRect(rects[i].x,rects[i].y,rects[i].width,rects[i].height);
     }
     context.strokeRect(rects[i].x,rects[i].y,rects[i].width,rects[i].height);
-    context.fillStyle="#F00";/*设置填充颜色*/
+    // context.fillStyle="#F00";/*设置填充颜色*/
+    var i_length = i % 5;
+    if (i_length == 4) {
+        i_length = -1;
+    }
+    context.fillStyle = colorarr[i_length + 1];/*设置填充颜色*/
     context.fillRect(rects[i].x-5,rects[i].y-5,10,10);
     context.fillRect(rects[i].x+rects[i].width-5,rects[i].y+rects[i].height-5,10,10);
     }
