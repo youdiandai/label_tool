@@ -242,6 +242,8 @@ function stopDragging() {
         }
     }
 
+
+    
   isDraw = false;
   isDragging = false;
   bol_edit_BOTTOM=false;
