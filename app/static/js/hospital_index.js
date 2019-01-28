@@ -70,7 +70,14 @@ $("#H_signclass").on("click", function () {
             success: function (data) {
                 marked_and_types[current_index][0] = true;
                 marked_and_types[current_index][1] = classify_str;
-                $(".tagg_results")[current_index].textContent = '分类信息：' + classify_str;
+                $(".tagg_results")[current_index].textContent = '';
+                let _desc = document.createElement('span');
+                _desc.textContent = '分类：';
+                let _type = document.createElement('span');
+                _type.textContent = classify_str;
+                _type.style.color = '#c94e50';
+                $(".tagg_results")[current_index].appendChild(_desc);
+                $(".tagg_results")[current_index].appendChild(_type);
                 refreshImgStatus(get_img_status(marked_and_types));
                 //刷新进度条
                 _marked = _marked + 1;

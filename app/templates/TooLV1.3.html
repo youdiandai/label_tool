@@ -257,27 +257,13 @@
         <div id="sign_history">
             <p style="color:white;">分类信息</p>
         </div>
-        {#<div id="marked_types">#}
-            {# {% for x in photos %}#}
-            {#<div id="decete_info_{{ x.id }}" style="display:none;">#}
-                {#<p style="font-size:18px;color:#ffffff" class="tagg_results">分类信息:{{ x.mark_type.name }}</p>#}
-            {#</div>#}
-            {#{% endfor %}#}
-        {#</div>#}
-        {% for x in photos %}
-            <div id="decete_info_{{ x.id }}" style="display:none;">
-                <p style="font-size:18px;color:#ffffff" class="tagg_results">分类：<span style="color:#c94e50;">{{ x.mark_type.name }}</span></p>
-            </div>
-        {% endfor %}
-        <!-- <p id="red_tips" style="margin: 0px 20px; font-size: 16px;">已选择分类：<span id="type_titps"></span></p> -->
-        <p id="red_tips" style="margin: 0px 20px; font-size: 16px;"></p>
-        <div id="hidden_div">
-            <P class="right_type_title">分类：</P>
-            <select class="right_select" id="type_select">
-                {% for x in mark_types %}
-                    <option value='{{ x.id }}'>{{ x.name }}</option>
-                {% endfor %}
-            </select>
+        <div id="marked_types">
+            {% for x in photos %}
+                <div id="decete_info_{{ x.id }}" style="display:none;">
+                    <p style="font-size:18px;color:#ffffff" class="tagg_results">分类：<span
+                            style="color:#c94e50;">{{ x.mark_type.name }}</span></p>
+                </div>
+            {% endfor %}
         </div>
     </div>
 
