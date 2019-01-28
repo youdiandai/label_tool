@@ -225,23 +225,23 @@ function stopDragging() {
   //当处于移动矩形的状态时，此时onmousemoved,
   //如果不判断，那么你鼠标点击移动的xy也会被加入数组，
   //所以只有在不是移动状态下的鼠标离开画布，才加入点数组
-  if (tooltip&&isDragging==false&&bol_edit_top==false&&bol_edit_BOTTOM==false) {
-    // console.log()
-    $(".tool_tip").get(0).style.display="block";
-    $(".theme-popover-mask").get(0).style.display="block";
-    if (clickY<=(canvas_rect.height/2)) {
-       $(".tool_tip").addClass("top");
-       //-20 25是三角的大小 可修改
-       $(".tool_tip").get(0).style.left=clickX+canvas_rect.offsetLeft-20+"px";
-       $(".tool_tip").get(0).style.top=clickY+canvas_rect.offsetTop+25+"px";
+
+    if (tooltip && isDragging == false && bol_edit_top == false && bol_edit_BOTTOM == false) {
+        if (isRectEdit && !isLineEdit) {
+            var rect = new rectcircle(clickX, clickY, x1 - clickX, y1 - clickY);
+            console.log(rect.width);
+            if (rect.width > 0) {
+                rects.push(rect);
+                var select_option = $("#classify").html();
+                console.log(select_option);
+                var select_index = (rects.length - 1) + "Rectes";
+                $(".right_select").append('<select id="' + select_index + '" class="classify" placeholder="手动输入或下拉选择分类">' + select_option + '</select>');
+                var color_index = rects.length % 5;
+                $("#" + select_index).css("border", "solid 3px " + colorarr[color_index])
+            }
+        }
     }
-    else {
-      //-20+25 -300位置调节 可修改
-      $(".tool_tip").get(0).style.left=clickX+canvas_rect.offsetLeft-20+"px";
-      $(".tool_tip").get(0).style.top=clickY+canvas_rect.offsetTop+25-300+"px";
-     }
-    // $()
-  }
+
   isDraw = false;
   isDragging = false;
   bol_edit_BOTTOM=false;

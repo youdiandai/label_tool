@@ -71,7 +71,7 @@ function imageLoad(index) {
                     canvas_rect = document.getElementById("canvas_rect");
                     ctx = canvas_rect.getContext("2d");
                     canvas_rect.height = canvas_rect.height;
-
+                    $(".classify").remove();
                     for (var i = 0; i < data.images[current_index].labels.length; i++) {
                         ctx.strokeStyle = "red";
                         ctx.rect(data.images[current_index].labels[i].x, data.images[current_index].labels[i].y, data.images[current_index].labels[i].width, data.images[current_index].labels[i].height);
@@ -79,9 +79,11 @@ function imageLoad(index) {
                         indexRectesofVue = (data.images[current_index].labels.length - 1) + "Rectes";
                         sign_context.items.push({
                             name: data.images[current_index].labels[i].name,
-                            id: indexRectesofVue,
+                            id: i + "Rectes",
                             classify: data.images[current_index].labels[i].label_type
                         });
+                        var rect_child = new rectcircle(data.images[current_index].labels[i].x, data.images[current_index].labels[i].y, data.images[current_index].labels[i].width, data.images[current_index].labels[i].height);
+                        rects.push(rect_child);
                     }
                     $("#save_as").css("display", "none");
                 } else {
