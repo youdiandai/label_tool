@@ -49,22 +49,31 @@ $("#save_as").on("click", function () {
     dictionary.push([].concat(sign_Information));
     var arr2 = img_files[current_index].split("/");
     var photo_id = arr2[2];
+    // for (var i = 0; i < $("#sign_context li").length; i++) {
+    //     if (i > 0) {
+    //         labels = labels + ",";
+    //     }
+    //     var str = $("#sign_context li").eq(i).text();
+    //     var arr = str.split("--");
+    //     var li_id = '';
+    //     for (var j = 0; j < $(".classify option").length; j++) {
+    //         //if ($("#classify option").eq(j).text() == arr[1].replace(/(^\s*)|(\s*$)/g, '')) {
+    //         if ($(".classify option").eq(j).text() == str.replace(/^\s+|\s+$/g,"")) {
+    //             li_id = $(".classify option").eq(j).val();
+    //         }
+    //     }
+    //     var _points = {};
+    //     labels = labels + '{"name":"' + arr[0].replace(/(^\s*)|(\s*$)/g, '') + '","x":"' + rects[i].x + '","y":"' + rects[i].y + '","height":"' + rects[i].height + '","width":"' + rects[i].width + '","label_type":"' + li_id + '"}';
+    // }
     var labels = '';
-    for (var i = 0; i < $("#sign_context li").length; i++) {
+    for (var i = 0; i < $(".classify").length; i++) {
         if (i > 0) {
             labels = labels + ",";
         }
-        var str = $("#sign_context li").eq(i).text();
-        var arr = str.split("--");
-        var li_id = '';
-        for (var j = 0; j < $(".classify option").length; j++) {
-            //if ($("#classify option").eq(j).text() == arr[1].replace(/(^\s*)|(\s*$)/g, '')) {
-            if ($(".classify option").eq(j).text() == str.replace(/^\s+|\s+$/g,"")) {
-                li_id = $(".classify option").eq(j).val();
-            }
-        }
-        var _points = {};
-        labels = labels + '{"name":"' + arr[0].replace(/(^\s*)|(\s*$)/g, '') + '","x":"' + rects[i].x + '","y":"' + rects[i].y + '","height":"' + rects[i].height + '","width":"' + rects[i].width + '","label_type":"' + li_id + '"}';
+        var li_id = $(".classify").eq(i).val();
+
+        // save_data = save_data + "{'points':[{'x':"+rects[i].x+",'y':"+rects[i].y+",'height':"+rects[i].height+",'width':"+rects[i].width+"}],'label_type':"+li_id+"}";
+        labels = labels + '{"name":"default","x":"' + rects[i].x + '","y":"' + rects[i].y + '","height":"' + rects[i].height + '","width":"' + rects[i].width + '","label_type":"' + li_id + '"}';
     }
     labels = "[" + labels + "]";
     console.log("123");
