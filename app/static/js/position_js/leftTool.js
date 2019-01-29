@@ -67,6 +67,7 @@ $("#save_as").on("click", function () {
         labels = labels + '{"name":"' + arr[0].replace(/(^\s*)|(\s*$)/g, '') + '","x":"' + rects[i].x + '","y":"' + rects[i].y + '","height":"' + rects[i].height + '","width":"' + rects[i].width + '","label_type":"' + li_id + '"}';
     }
     labels = "[" + labels + "]";
+    console.log("123");
     console.log(labels);
     $.ajax({
         type: "POST",//提交请求的方式
