@@ -218,7 +218,7 @@
         <div class="right_select" style="width:100%;">
             <!-- 根据分类数组动态显示下拉列表 -->
             <select id="classify" placeholder="手动输入或下拉选择分类" style="display:none;">
-                {% for x in record_types %}
+                {% for x in label_types %}
                     <option value='{{ x.id }}'>{{ x.name }}</option>
                 {% endfor %}
             </select>
