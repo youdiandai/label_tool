@@ -57,10 +57,10 @@ $("#save_as").on("click", function () {
         var str = $("#sign_context li").eq(i).text();
         var arr = str.split("--");
         var li_id = '';
-        for (var j = 0; j < $("#classify option").length; j++) {
+        for (var j = 0; j < $(".classify option").length; j++) {
             //if ($("#classify option").eq(j).text() == arr[1].replace(/(^\s*)|(\s*$)/g, '')) {
-            if ($("#classify option").eq(j).text() == str.replace(/^\s+|\s+$/g,"")) {
-                li_id = $("#classify option").eq(j).val();
+            if ($(".classify option").eq(j).text() == str.replace(/^\s+|\s+$/g,"")) {
+                li_id = $(".classify option").eq(j).val();
             }
         }
         var _points = {};
