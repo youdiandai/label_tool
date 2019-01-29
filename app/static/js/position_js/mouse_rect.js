@@ -441,3 +441,24 @@ function dragCircle(e) {
     });
 
 });
+// 右侧下拉鼠标移入事件
+$(".right_select").delegate(".classify", "mouseover", function () {
+    // console.log($(this).attr("id"));
+    var index = re(rects, previousSelectedCircle);
+    // rects.splice(index, 1);
+    var hover_select_id = $(this).attr("id");
+    var indexId = parseInt($(this).attr("id").slice(0, 1));
+    rects[indexId].isSelected = true;
+    refush(rects);
+    for (var i = 0; i < rects.length; i++) {
+        rects[i].isSelected = false;
+    }
+});
+// 右侧下拉鼠标移出事件
+$(".right_select").delegate(".classify", "mouseout", function () {
+    for (var i = 0; i < rects.length; i++) {
+        rects[i].isSelected = false;
+    }
+    refush(rects);
+    refush_circleLineDisable();
+});
