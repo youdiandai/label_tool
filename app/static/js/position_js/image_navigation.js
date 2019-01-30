@@ -179,4 +179,5 @@ function refreshImgNavi(index) {
     points = [];
     circles = [];
     rects = [];
+    $(".classify").remove();
 }
