@@ -107,6 +107,7 @@ $("#previous").on("click", function () {
         points = [];
         circles = [];
         rects = [];
+        $(".classify").remove();
     } else {
         alert("已经是第一张！")
     }
@@ -121,7 +122,7 @@ $("#next").on("click", function () {
         points = [];
         circles = [];
         rects = [];
-
+        $(".classify").remove();
     } else {
         alert("已经是最后一张！")
     }
