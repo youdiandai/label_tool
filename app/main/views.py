@@ -160,7 +160,7 @@ def create_project3(create_token):
             imp.reset()
             return render_template("create_project_3.html")
         else:
-            "流程错误"
+            return render_template("create_no_upload.html", pro_url=url_for(".project"))
     else:
         abort(404)
 
@@ -181,18 +181,21 @@ def end_add(p_id):
     imp = ImageUpload(current_user.id)
     file_names = imp.get_files()
     folder = Folders(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"), p_id, current_user.id)
-    for x in file_names:
-        ext = x[0].split('.')[1]
-        if ext in ALLOW_EXT:
-            try:
-                p_path = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(current_user.id),
-                                      x[1])
-                p_newpath = os.path.join(folder.url, x[1])
-                mycopyfile(p_path, p_newpath)
-            except IOError:
-                pass
-            else:
-                Photos(x[0], x[1], folder.id)
+    if len(file_names) != 0:
+        for x in file_names:
+            ext = x[0].split('.')[1]
+            if ext in ALLOW_EXT:
+                try:
+                    p_path = os.path.join(current_app.config['UPLOADPATH'], 'upload_tmp', str(current_user.id),
+                                          x[1])
+                    p_newpath = os.path.join(folder.url, x[1])
+                    mycopyfile(p_path, p_newpath)
+                except IOError:
+                    pass
+                else:
+                    Photos(x[0], x[1], folder.id)
+    else:
+        return render_template("create_no_upload.html", pro_url=url_for(".ptool", project_id=p_id))
     return redirect(url_for("main.ptool", project_id=p_id))
 
 

@@ -110,7 +110,7 @@ class ImageUpload:
         if str_json:
             return json.loads(str_json)
         else:
-            []
+            return list()
 
 
 def remove_folder(path):
