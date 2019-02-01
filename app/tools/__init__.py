@@ -106,7 +106,11 @@ class ImageUpload:
         从redis获取用户上传的文件名列表
         :return:
         """
-        return json.loads(self.conn.hget("label_tool", str(self.user_id)))
+        str_json = self.conn.hget("label_tool", str(self.user_id))
+        if str_json:
+            return json.loads(str_json)
+        else:
+            []
 
 
 def remove_folder(path):
