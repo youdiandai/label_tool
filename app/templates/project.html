@@ -48,11 +48,6 @@
 <body style="overflow-y:hidden;overflow-x:hidden;position:relative;">
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <ul class="nav navbar-nav">
-                <li><img src="{{ url_for('static',filename='image/qhtlogo.png') }}" class="qhtlogo"></li>
-            </ul>
-        </div>
         <ul class="nav navbar-nav navbar-right">
             <li class="navbar-brand text">欢迎您，{{ current_user.username }}&nbsp;&nbsp;&nbsp;|</li>
             <a class="navbar-brand text" href="{{ url_for('auth.logout') }}">退出登录</a>

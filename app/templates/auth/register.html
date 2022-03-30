@@ -118,13 +118,6 @@
 <body style="background:#3e3e40;">
 <div class="login_warp">
     <div class="header-top">
-        <div class="login_header">
-            <img src="{{ url_for('static',filename='image/qhtlogo.png') }}">
-            <ul class="header_ul">
-                <li><a href="http://www.qhttech.com/" target="_blank">起宏图官网</a></li>
-                <li><a href="http://cad.qhttech.com/" target="_blank">医学影像辅助诊断系统</a></li>
-            </ul>
-        </div>
     </div>
     <form method="POST" action="{{ url_for("auth.register") }}" autocomplete="on" enctype="multipart/form-data">
         <div class="login-main">
@@ -137,7 +130,6 @@
 
         </div>
     </form>
-    <div class="header-bottom">Copyright © Beijing QHT Technique Co.,Ltd. All rights reserved 北京起宏图科技有限公司</div>
 </div>
 </body>
 </html>
